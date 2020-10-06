@@ -1,11 +1,16 @@
 package com.steven.willysbakeshop.model;
 
-import org.springframework.data.annotation.Id;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
+@Table(name = "users", schema = "public")
 public class User {
 
     @Id
@@ -14,14 +19,12 @@ public class User {
     private String lastName;
     private String email;
 
-    public User(String firstName, String lastName, String email) {
+    public User() {}
+
+    public User( String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public void setFirstName(String firstName) {

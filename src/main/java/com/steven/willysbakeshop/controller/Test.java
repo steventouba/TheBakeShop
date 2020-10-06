@@ -2,22 +2,60 @@ package com.steven.willysbakeshop.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.steven.willysbakeshop.model.User;
+import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.utilities.exceptions.ErrorDetails;
+import com.steven.willysbakeshop.utilities.exceptions.UserNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/test")
-//@Transactional
-public class Test {
+5public class Test {
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Foo> ping() {
         return ResponseEntity.ok(new Foo("PONG"));
+    }
+
+    @GetMapping(value = "/users")
+    public ResponseEntity<List<User>> getUsers() {
+        List<User> all = userRepository.findAll();
+
+        return ResponseEntity.ok(all);
+
+    }
+
+    @GetMapping(value = "/user/{id}")
+    public ResponseEntity<User> getUsers(@PathVariable long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (user.isEmpty()) { throw new UserNotFoundException(String.format("User does not exit: %d", id)); }
+
+        return ResponseEntity.ok(user.get());
+    }
+
+    @ControllerAdvice
+    @RestController
+    public static class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+
+        public final ResponseEntity<ErrorDetails> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+            com.steven.willysbakeshop.utilities.exceptions.ErrorDetails errorDetails = new com.steven.willysbakeshop.utilities.exceptions.ErrorDetails(ex.getMessage(),
+                    request.getDescription(false));
+            return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+
+        }
     }
 
     @JacksonXmlRootElement(localName = "Foo")
