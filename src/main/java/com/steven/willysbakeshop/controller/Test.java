@@ -46,18 +46,6 @@ import java.util.Optional;
         return ResponseEntity.ok(user.get());
     }
 
-    @ControllerAdvice
-    @RestController
-    public static class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-
-        public final ResponseEntity<ErrorDetails> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
-            com.steven.willysbakeshop.utilities.exceptions.ErrorDetails errorDetails = new com.steven.willysbakeshop.utilities.exceptions.ErrorDetails(ex.getMessage(),
-                    request.getDescription(false));
-            return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-
-        }
-    }
-
     @JacksonXmlRootElement(localName = "Foo")
     public static class Foo {
 
