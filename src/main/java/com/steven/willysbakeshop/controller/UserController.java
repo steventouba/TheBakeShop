@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/test")
-public class Test {
+@RequestMapping("/users")
+public class UserController {
     @Autowired
     private UserRepository userRepository;
 
@@ -29,7 +29,7 @@ public class Test {
         return ResponseEntity.ok(new Foo("PONG"));
     }
 
-    @GetMapping(value = "/users")
+    @GetMapping(value = "/")
     public ResponseEntity<List<User>> getUsers() {
         List<User> all = userRepository.findAll();
 
@@ -37,13 +37,36 @@ public class Test {
 
     }
 
-    @GetMapping(value = "/user/{id}")
-    public ResponseEntity<User> getUsers(@PathVariable long id) {
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<User> getUsers(@PathVariable long id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        if (user.isEmpty()) { throw new UserNotFoundException(String.format("User does not exit: %d", id)); }
+        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User does not exist: %d", id)); }
 
         return ResponseEntity.ok(user.get());
+    }
+
+    @PostMapping(value = "/create")
+    public ResponseEntity<User> createUser(@RequestBody User newUser) {
+        User user = userRepository.save(newUser);
+
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping(value = "/{id}/edit")
+    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody User newUser) {
+        Optional<User> user = userRepository.findById(id);
+
+        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User: %d could not be located", id)); }
+
+        Optional<User> test = user.map(user1 -> {
+            user1.setFirstName(newUser.getFirstName());
+            user1.setLastName(newUser.getLastName());
+            user1.setEmail(newUser.getEmail());
+            return userRepository.save(user1);
+        });
+
+        return ResponseEntity.ok(test.get());
     }
 
     @JacksonXmlRootElement(localName = "Foo")
