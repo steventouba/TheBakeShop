@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/test")
-5public class Test {
+public class Test {
     @Autowired
     private UserRepository userRepository;
 

@@ -1,8 +1,5 @@
 package com.steven.willysbakeshop.utilities.exceptions;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.http.HttpStatus;
-
 import java.time.ZonedDateTime;
 
 public class ErrorDetails {
