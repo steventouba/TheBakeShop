@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<User> getUsers(@PathVariable long id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User does not exist: %d", id)); }
+        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User: %d does not exist", id)); }
 
         return ResponseEntity.ok(user.get());
     }
