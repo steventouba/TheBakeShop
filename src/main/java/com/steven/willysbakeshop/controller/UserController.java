@@ -1,7 +1,5 @@
 package com.steven.willysbakeshop.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.utilities.exceptions.UserNotFoundException;
@@ -22,8 +20,8 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Foo> ping() {
-        return ResponseEntity.ok(new Foo("PONG"));
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("OK");
     }
 
     @GetMapping(value = "/")
@@ -31,7 +29,6 @@ public class UserController {
         List<User> all = userRepository.findAll();
 
         return ResponseEntity.ok(all);
-
     }
 
     @GetMapping(value = "/{id}")
@@ -76,14 +73,24 @@ public class UserController {
         return ResponseEntity.ok(test.get());
     }
 
-    @JacksonXmlRootElement(localName = "Foo")
-    public static class Foo {
+    @DeleteMapping(value = "/{id}/delete")
+    public ResponseEntity<User> deleteUser(@PathVariable long id) {
+        Optional<User> user = userRepository.findById(id);
 
-        @JsonProperty
-        private String message;
+        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User: %d could not be located", id)); }
 
-        public Foo(String message) {
-            this.message = message;
-        }
+        userRepository.delete(user.get());
+        return ResponseEntity.ok(user.get());
     }
+
+//    @JacksonXmlRootElement(localName = "Foo")
+//    public static class Foo {
+//
+//        @JsonProperty
+//        private String message;
+//
+//        public Foo(String message) {
+//            this.message = message;
+//        }
+//    }
 }
