@@ -4,6 +4,7 @@ package com.steven.willysbakeshop.model;
 import javax.persistence.*;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
@@ -22,6 +23,7 @@ public class User {
     private String lastName;
 
     @NotBlank(message = "Email may not be blank")
+    @Email(message = "Email should be valid")
     private String email;
 
     public User() {}

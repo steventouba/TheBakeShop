@@ -3,10 +3,10 @@ package com.steven.willysbakeshop.utilities.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class UserNotFoundException extends RuntimeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class UserValidationException extends RuntimeException {
 
-    public UserNotFoundException(String message) {
+    public UserValidationException(String message) {
         super(message);
     }
 }

@@ -4,17 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.repository.UserRepository;
-import com.steven.willysbakeshop.utilities.exceptions.ErrorDetails;
 import com.steven.willysbakeshop.utilities.exceptions.UserNotFoundException;
+import com.steven.willysbakeshop.utilities.exceptions.UserValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.ZonedDateTime;
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,10 +44,20 @@ public class UserController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<User> createUser(@RequestBody User newUser) {
-        User user = userRepository.save(newUser);
-
-        return ResponseEntity.ok(user);
+    public ResponseEntity<User> createUser(@RequestBody User newUser) throws UserValidationException {
+        try {
+            User user = userRepository.save(newUser);
+            return ResponseEntity.ok(user);
+        } catch (ConstraintViolationException e) {
+            StringBuilder sb = new StringBuilder();
+            e.getConstraintViolations()
+                    .stream()
+                    .forEach(violation -> {
+                        sb.append(violation.getMessage());
+                        sb.append(", ");
+                    });
+            throw new UserValidationException(sb.toString());
+        }
     }
 
     @PutMapping(value = "/{id}/edit")

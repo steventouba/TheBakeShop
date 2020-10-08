@@ -3,9 +3,9 @@ package com.steven.willysbakeshop.utilities.exceptions;
 import java.time.ZonedDateTime;
 
 public class ErrorDetails {
-    private ZonedDateTime timestamp;
-    private String message;
-    private String details;
+    private final ZonedDateTime timestamp;
+    private final String message;
+    private final String details;
 
     public ErrorDetails(String message, String details) {
         super();
