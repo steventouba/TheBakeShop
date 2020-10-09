@@ -1,10 +1,10 @@
 package com.steven.willysbakeshop.model;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
@@ -16,19 +16,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonProperty("first-name")
     @NotBlank(message = "First Name may not be blank")
     private String firstName;
 
+    @JsonProperty("last-name")
     @NotBlank(message = "Last Name may not be blank")
     private String lastName;
 
+    @JsonProperty
     @NotBlank(message = "Email may not be blank")
-    @Email(message = "Email should be valid")
+//    @Email(message = "Email should be valid")
     private String email;
 
+    @JsonCreator
     public User() {}
 
-    public User( String firstName, String lastName, String email) {
+    public User(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

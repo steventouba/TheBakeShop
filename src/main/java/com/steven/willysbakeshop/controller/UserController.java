@@ -1,5 +1,8 @@
 package com.steven.willysbakeshop.controller;
 
+import com.fasterxml.jackson.databind.MappingIterator;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.utilities.exceptions.UserNotFoundException;
@@ -7,15 +10,19 @@ import com.steven.willysbakeshop.utilities.exceptions.UserValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
+@Transactional
 public class UserController {
+    public static final MediaType TEXT_CSV = new MediaType("text", "csv");
+    public static final String TEXT_CSV_VALUE = "text/csv";
     @Autowired
     private UserRepository userRepository;
 
@@ -40,21 +47,41 @@ public class UserController {
         return ResponseEntity.ok(user.get());
     }
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody User newUser) throws UserValidationException {
-        try {
-            User user = userRepository.save(newUser);
-            return ResponseEntity.ok(user);
-        } catch (ConstraintViolationException e) {
-            StringBuilder sb = new StringBuilder();
-            e.getConstraintViolations()
-                    .stream()
-                    .forEach(violation -> {
-                        sb.append(violation.getMessage());
-                        sb.append(", ");
-                    });
-            throw new UserValidationException(sb.toString());
+        newUser.hashCode();
+        return ResponseEntity.ok(newUser);
+//        try {
+//            User user = userRepository.save(newUser);
+//            return ResponseEntity.ok(user);
+////        } catch (Exception e) {
+////            StringBuilder sb = new StringBuilder();
+////            e.getConstraintViolations()
+////                    .stream()
+////                    .forEach(violation -> {
+////                        sb.append(violation.getMessage());
+////                        sb.append(", ");
+////                    });
+////            throw new UserValidationException(sb.toString());
+////        }
+    }
+
+    @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)
+    public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
+//        InputStream inputStream = csv.getInputStream();
+
+        MappingIterator<User> iterator = new CsvMapper()
+                .readerFor(User.class)
+                .with(CsvSchema.emptySchema().withHeader())
+                .readValues(csv);
+
+        while (iterator.hasNext()) {
+
+            userRepository.save(iterator.next());
         }
+
+//        userRepository.broken();
+        return ResponseEntity.ok("OK");
     }
 
     @PutMapping(value = "/{id}/edit")

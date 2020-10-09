@@ -1,6 +1,7 @@
 package com.steven.willysbakeshop.repository;
 
 import com.steven.willysbakeshop.model.User;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAll();
     Optional<User> findById(Long id);
+
+    @Query(value = "Select * FROM foo", nativeQuery = true)
+    List<User> broken();
 }

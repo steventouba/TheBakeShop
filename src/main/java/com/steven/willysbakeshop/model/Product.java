@@ -1,5 +1,8 @@
 package com.steven.willysbakeshop.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
@@ -20,7 +23,8 @@ public class Product {
 
     public Product() {};
 
-    public Product(String name, String description) {
+    @JsonCreator
+    public Product(@JsonProperty(value = "name") String name, @JsonProperty(value = "description") String description) {
         this.name = name;
         this.description = description;
     }
