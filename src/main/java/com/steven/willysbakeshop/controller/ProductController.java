@@ -20,8 +20,8 @@ import java.util.Optional;
 @RequestMapping(value = "/products")
 @Transactional
 public class ProductController {
-    public final static String CSV = "text/csv";
-
+    public static final MediaType TEXT_CSV = new MediaType("text", "csv");
+    public static final String TEXT_CSV_VALUE = "text/csv";
 
     @Autowired
     ProductRepository productRepository;
@@ -50,7 +50,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @PostMapping(value = "/create")
+    @PostMapping(value = "/create", consumes = TEXT_CSV_VALUE)
     public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
 
         MappingIterator<Product> iterator = new CsvMapper()

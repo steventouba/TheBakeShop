@@ -23,6 +23,7 @@ import java.util.Optional;
 public class UserController {
     public static final MediaType TEXT_CSV = new MediaType("text", "csv");
     public static final String TEXT_CSV_VALUE = "text/csv";
+
     @Autowired
     private UserRepository userRepository;
 
@@ -54,14 +55,7 @@ public class UserController {
             User user = userRepository.save(newUser);
             return ResponseEntity.ok(user);
         } catch (Exception e) {
-            StringBuilder sb = new StringBuilder();
-            e.getConstraintViolations()
-                    .stream()
-                    .forEach(violation -> {
-                        sb.append(violation.getMessage());
-                        sb.append(", ");
-                    });
-            throw new UserValidationException(sb.toString());
+            throw new UserValidationException("validation error");
         }
     }
 

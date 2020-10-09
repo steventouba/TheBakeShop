@@ -1,6 +1,5 @@
 package com.steven.willysbakeshop.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -15,16 +14,17 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @JsonProperty
     @NotBlank(message = "Product name must not be empty")
     private String name;
 
+    @JsonProperty
     @NotBlank(message = "Product description must not be empty")
     private String description;
 
     public Product() {};
 
-    @JsonCreator
-    public Product(@JsonProperty(value = "name") String name, @JsonProperty(value = "description") String description) {
+    public Product(String name, String description) {
         this.name = name;
         this.description = description;
     }
