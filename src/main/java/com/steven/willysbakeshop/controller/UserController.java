@@ -49,26 +49,24 @@ public class UserController {
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody User newUser) throws UserValidationException {
-        newUser.hashCode();
-        return ResponseEntity.ok(newUser);
-//        try {
-//            User user = userRepository.save(newUser);
-//            return ResponseEntity.ok(user);
-////        } catch (Exception e) {
-////            StringBuilder sb = new StringBuilder();
-////            e.getConstraintViolations()
-////                    .stream()
-////                    .forEach(violation -> {
-////                        sb.append(violation.getMessage());
-////                        sb.append(", ");
-////                    });
-////            throw new UserValidationException(sb.toString());
-////        }
+
+        try {
+            User user = userRepository.save(newUser);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            StringBuilder sb = new StringBuilder();
+            e.getConstraintViolations()
+                    .stream()
+                    .forEach(violation -> {
+                        sb.append(violation.getMessage());
+                        sb.append(", ");
+                    });
+            throw new UserValidationException(sb.toString());
+        }
     }
 
     @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)
     public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
-//        InputStream inputStream = csv.getInputStream();
 
         MappingIterator<User> iterator = new CsvMapper()
                 .readerFor(User.class)
@@ -76,11 +74,9 @@ public class UserController {
                 .readValues(csv);
 
         while (iterator.hasNext()) {
-
             userRepository.save(iterator.next());
         }
 
-//        userRepository.broken();
         return ResponseEntity.ok("OK");
     }
 

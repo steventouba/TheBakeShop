@@ -7,10 +7,10 @@ import com.steven.willysbakeshop.model.Product;
 import com.steven.willysbakeshop.repository.ProductRepository;
 import com.steven.willysbakeshop.utilities.exceptions.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
@@ -42,24 +42,25 @@ public class ProductController {
         return ResponseEntity.ok(product.get());
     }
 
-//    @PostMapping(value = "/create")
-//    public ResponseEntity<String> createProducts(@RequestBody String file) throws IOException {
-//        InputStream inputStream = file.getInputStream();
-//        List<Object> objectMappingIterator = new CsvMapper().readerWithSchemaFor(Product.class).readValues(inputStream).readAll();
-//
-//        return ResponseEntity.ok("OK");
-//    }
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Product> createProducts(@RequestBody Product newProduct ) {
+
+        Product product = productRepository.save(newProduct);
+
+        return ResponseEntity.ok(product);
+    }
 
     @PostMapping(value = "/create")
-    public ResponseEntity<String> createProducts(HttpServletRequest file) throws IOException {
-//        InputStream inputStream = file.getInputStream();
+    public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
 
-        MappingIterator<Product> iterator = new CsvMapper().readerFor(Product.class).with(CsvSchema.emptySchema().withHeader()).readValues(file.getInputStream());
+        MappingIterator<Product> iterator = new CsvMapper()
+                .readerFor(Product.class)
+                .with(CsvSchema.emptySchema().withHeader())
+                .readValues(csv);
 
         while (iterator.hasNext()) {
             productRepository.save(iterator.next());
         }
-
 
         return ResponseEntity.ok("OK");
     }
