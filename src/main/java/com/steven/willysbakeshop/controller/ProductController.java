@@ -65,4 +65,19 @@ public class ProductController {
         return ResponseEntity.ok("OK");
     }
 
+    @PutMapping("/{id}/edit")
+    public ResponseEntity<Product> editProduct(@PathVariable long id, @RequestBody  Product toEdit) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (!product.isPresent()) {
+            throw new ProductNotFoundException(String.format("Product : %d does not exist"));
+        }
+
+        Product product1 = product.get();
+        product1.setName(toEdit.getName());
+        product1.setDescription(toEdit.getDescription());
+
+        productRepository.save(product1);
+    }
+
 }
