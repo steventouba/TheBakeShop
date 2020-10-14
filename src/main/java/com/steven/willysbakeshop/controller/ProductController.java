@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -66,18 +67,21 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<Product> editProduct(@PathVariable long id, @RequestBody  Product toEdit) {
+    public ResponseEntity<Product> editProduct(@PathVariable long id, @Valid @RequestBody Product toEdit) {
         Optional<Product> product = productRepository.findById(id);
 
         if (!product.isPresent()) {
             throw new ProductNotFoundException(String.format("Product : %d does not exist"));
         }
 
-        Product product1 = product.get();
-        product1.setName(toEdit.getName());
-        product1.setDescription(toEdit.getDescription());
+        Product body = product.get();
+        body.setName(toEdit.getName());
+        body.setDescription(toEdit.getDescription());
 
-        productRepository.save(product1);
+        productRepository.save(body);
+
+        return ResponseEntity
+                .ok(body);
     }
 
 }

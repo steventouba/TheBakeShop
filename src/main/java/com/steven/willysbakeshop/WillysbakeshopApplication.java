@@ -11,8 +11,3 @@ public class WillysbakeshopApplication {
 	}
 
 }
-
-
-
-
-src/main/resources/db/entities/products.csv
