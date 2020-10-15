@@ -19,9 +19,6 @@ public class Violation {
 
     @Override
     public String toString() {
-        return "Violation{" +
-                "fieldName='" + fieldName + '\'' +
-                ", message='" + message + '\'' +
-                '}';
+        return fieldName + ": " + message;
     }
 }
