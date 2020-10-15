@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.steven.willysbakeshop.configuration.MediaTypes.TEXT_CSV_VALUE;
+
 @RestController
 @RequestMapping("/users")
 @Transactional
 public class UserController {
-    public static final MediaType TEXT_CSV = new MediaType("text", "csv");
-    public static final String TEXT_CSV_VALUE = "text/csv";
 
     @Autowired
     private UserRepository userRepository;
@@ -43,7 +43,9 @@ public class UserController {
     public ResponseEntity<User> getUserById(@PathVariable long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        if (!user.isPresent()) { throw new NotFoundException(String.format("User: %d does not exist", id)); }
+        if (!user.isPresent()) {
+            throw new NotFoundException(String.format("User: %d does not exist", id));
+        }
 
         return ResponseEntity.ok(user.get());
     }
@@ -73,7 +75,9 @@ public class UserController {
     public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody @Valid User newUser) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        if (!user.isPresent()) { throw new NotFoundException(String.format("User: %d could not be located", id)); }
+        if (!user.isPresent()) {
+            throw new NotFoundException(String.format("User: %d could not be located", id));
+        }
 
         Optional<User> test = user.map(user1 -> {
             user1.setFirstName(newUser.getFirstName());

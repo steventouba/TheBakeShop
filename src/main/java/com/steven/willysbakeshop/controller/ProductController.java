@@ -17,12 +17,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.steven.willysbakeshop.configuration.MediaTypes.TEXT_CSV_VALUE;
+
 @RestController
 @RequestMapping(value = "/products")
 @Transactional
 public class ProductController {
-    public static final MediaType TEXT_CSV = new MediaType("text", "csv");
-    public static final String TEXT_CSV_VALUE = "text/csv";
 
     @Autowired
     ProductRepository productRepository;
@@ -37,7 +37,9 @@ public class ProductController {
     public ResponseEntity<Product> getProductById(@PathVariable long id) throws NotFoundException {
         Optional<Product> product = productRepository.findById(id);
 
-        if (!product.isPresent()) { throw new NotFoundException(String.format("product: %d does not exist", id)); }
+        if (!product.isPresent()) {
+            throw new NotFoundException(String.format("product: %d does not exist", id));
+        }
 
         return ResponseEntity.ok(product.get());
     }
