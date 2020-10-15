@@ -24,7 +24,7 @@ public class Product {
 
     public Product() {};
 
-    public Product(String name, String description) {
+    public Product(String name, String description, int test) {
         this.name = name;
         this.description = description;
     }
