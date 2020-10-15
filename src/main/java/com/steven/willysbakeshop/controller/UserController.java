@@ -5,14 +5,14 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.repository.UserRepository;
-import com.steven.willysbakeshop.utilities.exceptions.UserNotFoundException;
-import com.steven.willysbakeshop.utilities.exceptions.UserValidationException;
+import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -40,23 +40,18 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable long id) throws UserNotFoundException {
+    public ResponseEntity<User> getUserById(@PathVariable long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User: %d does not exist", id)); }
+        if (!user.isPresent()) { throw new NotFoundException(String.format("User: %d does not exist", id)); }
 
         return ResponseEntity.ok(user.get());
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createUser(@RequestBody User newUser) throws UserValidationException {
-
-        try {
-            User user = userRepository.save(newUser);
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            throw new UserValidationException("validation error");
-        }
+    public ResponseEntity<User> createUser(@RequestBody @Valid User newUser)  {
+        User user = userRepository.save(newUser);
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)
@@ -75,10 +70,10 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody User newUser) {
+    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody @Valid User newUser) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User: %d could not be located", id)); }
+        if (!user.isPresent()) { throw new NotFoundException(String.format("User: %d could not be located", id)); }
 
         Optional<User> test = user.map(user1 -> {
             user1.setFirstName(newUser.getFirstName());
@@ -91,10 +86,10 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<User> deleteUser(@PathVariable long id) {
+    public ResponseEntity<User> deleteUser(@PathVariable long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        if (!user.isPresent()) { throw new UserNotFoundException(String.format("User: %d could not be located", id)); }
+        if (!user.isPresent()) { throw new NotFoundException(String.format("User: %d could not be located", id)); }
 
         userRepository.delete(user.get());
         return ResponseEntity.ok(user.get());

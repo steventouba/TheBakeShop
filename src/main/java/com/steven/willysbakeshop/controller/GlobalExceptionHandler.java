@@ -18,16 +18,10 @@ import javax.validation.ConstraintViolationException;
 @RestController
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-   @ExceptionHandler(UserNotFoundException.class)
-    public final ResponseEntity<ErrorDetails> handleUserNotFoundException(UserNotFoundException ex, WebRequest request) {
+   @ExceptionHandler(NotFoundException.class)
+    public final ResponseEntity<ErrorDetails> handleNotFoundException(NotFoundException ex, WebRequest request) {
     ErrorDetails errorDetails = new ErrorDetails(ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UserValidationException.class)
-    public final ResponseEntity<ErrorDetails> handleUserValidationException(UserValidationException ex, WebRequest request) {
-       ErrorDetails errorDetails = new ErrorDetails(ex.getMessage(), request.getDescription(false));
-       return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

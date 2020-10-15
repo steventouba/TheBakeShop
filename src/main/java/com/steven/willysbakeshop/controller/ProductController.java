@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.steven.willysbakeshop.model.Product;
 import com.steven.willysbakeshop.repository.ProductRepository;
-import com.steven.willysbakeshop.utilities.exceptions.ProductNotFoundException;
+import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,15 +30,14 @@ public class ProductController {
     @GetMapping(value = "/")
     public ResponseEntity<List<Product>> getProducts() {
         List<Product> products = productRepository.findAll();
-
         return ResponseEntity.ok(products);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable long id) throws ProductNotFoundException {
+    public ResponseEntity<Product> getProductById(@PathVariable long id) throws NotFoundException {
         Optional<Product> product = productRepository.findById(id);
 
-        if (!product.isPresent()) { throw new ProductNotFoundException(String.format("product: %d does not exist", id)); }
+        if (!product.isPresent()) { throw new NotFoundException(String.format("product: %d does not exist", id)); }
 
         return ResponseEntity.ok(product.get());
     }
@@ -70,18 +69,13 @@ public class ProductController {
     public ResponseEntity<Product> editProduct(@PathVariable long id, @Valid @RequestBody Product toEdit) {
         Optional<Product> product = productRepository.findById(id);
 
-        if (!product.isPresent()) {
-            throw new ProductNotFoundException(String.format("Product : %d does not exist"));
-        }
-
         Product body = product.get();
         body.setName(toEdit.getName());
         body.setDescription(toEdit.getDescription());
 
         productRepository.save(body);
 
-        return ResponseEntity
-                .ok(body);
+        return ResponseEntity.ok(body);
     }
 
 }
