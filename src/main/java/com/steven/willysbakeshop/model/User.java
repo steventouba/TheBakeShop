@@ -26,7 +26,6 @@ public class User {
 
     @JsonProperty
     @NotBlank(message = "Email may not be blank")
-//    @Email(message = "Email should be valid")
     private String email;
 
     @JsonCreator
