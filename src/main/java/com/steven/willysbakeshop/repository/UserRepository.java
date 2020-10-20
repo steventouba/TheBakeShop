@@ -12,7 +12,9 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     List<User> findAll();
     Optional<User> findById(Long id);
+    Optional<User> findByEmail(String email);
 
-//    @Query(value = "Select * FROM foo", nativeQuery = true)
-//    List<User> broken();
+
+    @Query(value = "Select * FROM foo", nativeQuery = true)
+    List<User> broken();
 }
