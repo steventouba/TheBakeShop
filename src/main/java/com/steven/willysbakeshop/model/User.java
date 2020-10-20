@@ -28,6 +28,11 @@ public class User {
     @NotBlank(message = "Email may not be blank")
     private String email;
 
+    @JsonProperty
+    @NotBlank(message = "password can't be blank")
+    @Column(name = "password_digest")
+    private String password;
+
     @JsonCreator
     public User() {}
 
@@ -49,6 +54,8 @@ public class User {
         this.email = email;
     }
 
+    public void setPassword(String password) { this.password = password; }
+
     public long getId() {
         return id;
     }
@@ -64,6 +71,8 @@ public class User {
     public String getEmail() {
         return email;
     }
+
+    public String getPassword() { return  password; }
 
     @Override
     public boolean equals(Object o) {
