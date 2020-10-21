@@ -9,7 +9,6 @@ import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +26,6 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping() {
@@ -56,8 +52,6 @@ public class UserController {
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@RequestBody @Valid User newUser)  {
-
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         User user = userRepository.save(newUser);
 
         return ResponseEntity.ok(user);
