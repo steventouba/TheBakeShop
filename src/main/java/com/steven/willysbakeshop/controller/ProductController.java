@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -50,8 +51,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createProducts(@RequestBody Product newProduct ) {
-
+    public ResponseEntity<Product> createProducts(HttpServletRequest request, @RequestBody Product newProduct ) {
         Product product = productRepository.save(newProduct);
 
         return ResponseEntity.ok(product);

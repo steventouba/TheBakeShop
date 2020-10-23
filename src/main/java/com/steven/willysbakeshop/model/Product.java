@@ -23,10 +23,10 @@ public class Product {
     @NotBlank(message = "Product description must not be empty")
     private String description;
 
-    @JsonProperty
+    @JsonProperty("seller-id")
     @NotNull(message = "Seller must not be empty")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = "seller-id", nullable = false)
     private User seller;
 
     public Product() {};
