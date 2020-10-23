@@ -27,6 +27,11 @@ public class ProductController {
     @Autowired
     ProductRepository productRepository;
 
+    @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("OK");
+    }
+
     @GetMapping(value = "/")
     public ResponseEntity<List<Product>> getProducts() {
         List<Product> products = productRepository.findAll();
@@ -67,9 +72,12 @@ public class ProductController {
         return ResponseEntity.ok("OK");
     }
 
-    @PutMapping("/{id}/edit")
-    public ResponseEntity<Product> editProduct(@PathVariable long id, @Valid @RequestBody Product toEdit) {
+    @PutMapping(value = "/{id}/edit")
+    public ResponseEntity<Product> editProduct(@PathVariable long id, @Valid @RequestBody Product toEdit)
+            throws NotFoundException{
         Optional<Product> product = productRepository.findById(id);
+
+        if (!product.isPresent()) { throw new NotFoundException("Product not found"); }
 
         Product body = product.get();
         body.setName(toEdit.getName());
@@ -80,4 +88,14 @@ public class ProductController {
         return ResponseEntity.ok(body);
     }
 
+    @DeleteMapping(value = "{id}/delete")
+    public ResponseEntity<Product> deleteProduct(@PathVariable long id) {
+        Optional<Product> product = productRepository.findById(id);
+
+        if (!product.isPresent()) { throw new NotFoundException("Product does not exist"); }
+
+        productRepository.delete(product.get());
+
+        return ResponseEntity.ok(product.get());
+    }
 }
