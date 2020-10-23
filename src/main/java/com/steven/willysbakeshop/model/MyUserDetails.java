@@ -1,4 +1,4 @@
-package com.steven.willysbakeshop.configuration;
+package com.steven.willysbakeshop.model;
 
 
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +9,9 @@ import java.util.Collection;
 
 public class MyUserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
+    private  String password;
+    private  String lastName;
+    private  String firstName;
     private String username;
 
     public MyUserDetails(String username) {
@@ -17,6 +20,13 @@ public class MyUserDetails implements org.springframework.security.core.userdeta
 
     public MyUserDetails() {}
 
+    public MyUserDetails(User user) {
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.username = user.getEmail();
+        this.password = user.getPassword();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.asList(new SimpleGrantedAuthority("ROLE_USER"));
@@ -24,12 +34,12 @@ public class MyUserDetails implements org.springframework.security.core.userdeta
 
     @Override
     public String getPassword() {
-        return "pass";
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return this.username;
     }
 
     @Override
