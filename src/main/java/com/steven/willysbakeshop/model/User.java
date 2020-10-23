@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users", schema = "public")
@@ -28,10 +29,12 @@ public class User {
     @NotBlank(message = "Email may not be blank")
     private String email;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "password can't be blank")
     @Column(name = "password_digest")
     private String password;
+
+    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
+    private Set<Product> products;
 
     @JsonCreator
     public User() {}

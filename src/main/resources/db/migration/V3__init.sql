@@ -1,5 +1,0 @@
-CREATE TABLE products(
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(80) NOT NULL,
-    description VARCHAR(80) NOT NULL
-);

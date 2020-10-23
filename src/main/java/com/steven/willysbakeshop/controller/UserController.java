@@ -89,6 +89,7 @@ public class UserController {
             user1.setFirstName(newUser.getFirstName());
             user1.setLastName(newUser.getLastName());
             user1.setEmail(newUser.getEmail());
+            user1.setPassword(passwordEncoder.encode(newUser.getPassword()));
             return userRepository.save(user1);
         });
 

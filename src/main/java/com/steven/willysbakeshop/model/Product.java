@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -22,11 +23,18 @@ public class Product {
     @NotBlank(message = "Product description must not be empty")
     private String description;
 
+    @JsonProperty
+    @NotNull(message = "Seller must not be empty")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "seller_id", nullable = false)
+    private User seller;
+
     public Product() {};
 
-    public Product(String name, String description, int test) {
+    public Product(String name, String description, User seller) {
         this.name = name;
         this.description = description;
+        this.seller = seller;
     }
 
     public long getId() {
@@ -48,6 +56,10 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public User getSeller() { return seller; }
+
+    public void setSeller(User seller) { this.seller = seller; }
 
     @Override
     public boolean equals(Object o) {
