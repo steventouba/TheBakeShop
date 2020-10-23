@@ -28,7 +28,7 @@ public class User {
     @NotBlank(message = "Email may not be blank")
     private String email;
 
-    @JsonProperty
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "password can't be blank")
     @Column(name = "password_digest")
     private String password;
