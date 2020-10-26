@@ -1,6 +1,8 @@
 package com.steven.willysbakeshop.model;
 
-public class ProductDTO {
+import java.io.Serializable;
+
+public class ProductDTO implements Serializable {
 
     private final long seller;
     private final String description;

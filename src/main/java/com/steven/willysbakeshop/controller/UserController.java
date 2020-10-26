@@ -46,10 +46,7 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<User> getUserById(@PathVariable long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
-
-        if (!user.isPresent()) {
-            throw new NotFoundException(String.format("User: %d does not exist", id));
-        }
+        user.orElseThrow(() -> new NotFoundException(String.format("User: %d does not exist", id)));
 
         return ResponseEntity.ok(user.get());
     }
@@ -80,12 +77,9 @@ public class UserController {
     @PutMapping(value = "/{id}/edit")
     public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody @Valid User newUser) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
+        user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
 
-        if (!user.isPresent()) {
-            throw new NotFoundException(String.format("User: %d could not be located", id));
-        }
-
-        Optional<User> test = user.map(user1 -> {
+        Optional<User> userStream = user.map(user1 -> {
             user1.setFirstName(newUser.getFirstName());
             user1.setLastName(newUser.getLastName());
             user1.setEmail(newUser.getEmail());
@@ -93,27 +87,16 @@ public class UserController {
             return userRepository.save(user1);
         });
 
-        return ResponseEntity.ok(test.get());
+        return ResponseEntity.ok(userStream.get());
     }
 
     @DeleteMapping(value = "/{id}/delete")
     public ResponseEntity<User> deleteUser(@PathVariable long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
-
-        if (!user.isPresent()) { throw new NotFoundException(String.format("User: %d could not be located", id)); }
-
+        user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
         userRepository.delete(user.get());
+
         return ResponseEntity.ok(user.get());
     }
 
-//    @JacksonXmlRootElement(localName = "Foo")
-//    public static class Foo {
-//
-//        @JsonProperty
-//        private String message;
-//
-//        public Foo(String message) {
-//            this.message = message;
-//        }
-//    }
 }

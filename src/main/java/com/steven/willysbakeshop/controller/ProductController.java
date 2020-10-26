@@ -48,10 +48,7 @@ public class ProductController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable long id) throws NotFoundException {
         Optional<Product> product = productRepository.findById(id);
-
-        if (!product.isPresent()) {
-            throw new NotFoundException(String.format("product: %d does not exist", id));
-        }
+        product.orElseThrow(() -> new NotFoundException(String.format("product: %d does not exist", id)));
 
         return ResponseEntity.ok(product.get());
     }
@@ -59,7 +56,6 @@ public class ProductController {
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Product> createProducts(@RequestBody ProductDTO productDTO ) {
         Optional<User> user = userRepository.findById(productDTO.getSeller());
-
         if (!user.isPresent()) { throw new NotFoundException("Could not locate listed seller"); }
 
         Product product = new Product();
@@ -90,13 +86,11 @@ public class ProductController {
     public ResponseEntity<Product> editProduct(@PathVariable long id, @Valid @RequestBody Product toEdit)
             throws NotFoundException{
         Optional<Product> product = productRepository.findById(id);
-
-        if (!product.isPresent()) { throw new NotFoundException("Product not found"); }
+        product.orElseThrow(() -> new NotFoundException("Product not found"));
 
         Product body = product.get();
         body.setName(toEdit.getName());
         body.setDescription(toEdit.getDescription());
-
         productRepository.save(body);
 
         return ResponseEntity.ok(body);
@@ -105,8 +99,7 @@ public class ProductController {
     @DeleteMapping(value = "{id}/delete")
     public ResponseEntity<Product> deleteProduct(@PathVariable long id) {
         Optional<Product> product = productRepository.findById(id);
-
-        if (!product.isPresent()) { throw new NotFoundException("Product does not exist"); }
+        product.orElseThrow(() -> new NotFoundException("Product not found"));
 
         productRepository.delete(product.get());
 
