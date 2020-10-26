@@ -4,14 +4,16 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.steven.willysbakeshop.model.Product;
+import com.steven.willysbakeshop.model.ProductDTO;
+import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.repository.ProductRepository;
+import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -28,6 +30,9 @@ public class ProductController {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping() {
         return ResponseEntity.ok("OK");
@@ -36,6 +41,7 @@ public class ProductController {
     @GetMapping(value = "/")
     public ResponseEntity<List<Product>> getProducts() {
         List<Product> products = productRepository.findAll();
+
         return ResponseEntity.ok(products);
     }
 
@@ -51,8 +57,16 @@ public class ProductController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createProducts(HttpServletRequest request, @RequestBody Product newProduct ) {
-        Product product = productRepository.save(newProduct);
+    public ResponseEntity<Product> createProducts(@RequestBody ProductDTO productDTO ) {
+        Optional<User> user = userRepository.findById(productDTO.getSeller());
+
+        if (!user.isPresent()) { throw new NotFoundException("Could not locate listed seller"); }
+
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setSeller(user.get());
+        productRepository.save(product);
 
         return ResponseEntity.ok(product);
     }

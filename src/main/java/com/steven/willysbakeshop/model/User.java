@@ -71,6 +71,10 @@ public class User {
         return lastName;
     }
 
+    public Set<Product> getProducts() {
+        return products;
+    }
+
     public String getEmail() {
         return email;
     }
