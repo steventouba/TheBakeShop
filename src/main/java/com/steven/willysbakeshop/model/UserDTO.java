@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class UserDTO implements Serializable {
 
+    private long id;
+
     @JsonProperty("first-name")
     @NotBlank(message = "First Name may not be blank")
     private String firstName;
@@ -20,7 +22,6 @@ public class UserDTO implements Serializable {
     @NotBlank(message = "Email may not be blank")
     private String email;
 
-    @NotBlank(message = "password can't be blank")
     private String password;
 
     private Set<Product> products;
@@ -39,6 +40,8 @@ public class UserDTO implements Serializable {
         this.lastName = lastName;
         this.email = email;
     }
+
+    public long getId() { return id; }
 
     public String getFirstName() {
         return firstName;
@@ -59,6 +62,8 @@ public class UserDTO implements Serializable {
     public Set<Product> getProducts() {
         return products;
     }
+
+    public void  setId(long id) { this.id = id; }
 
     public void setPassword(String password) {
         this.password = password;

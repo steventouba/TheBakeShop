@@ -21,7 +21,7 @@ public class UserService {
     UserRepository userRepository;
 
     @Transactional
-    public boolean registerNewUserAccount(UserDTO userDTO) {
+    public UserDTO registerNewUserAccount(UserDTO userDTO) {
 
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
@@ -30,11 +30,13 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
 
-        return true;
+        userDTO.setPassword("");
+        userDTO.setId(user.getId());
+        return userDTO;
     }
 
     @Transactional
-    public User alterUserAccount(UserDTO userDTO, long id) throws NotFoundException {
+    public UserDTO alterUserAccount(UserDTO userDTO, long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
         user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
 
@@ -42,10 +44,9 @@ public class UserService {
             userToEdit.setFirstName(userDTO.getFirstName());
             userToEdit.setLastName(userDTO.getLastName());
             userToEdit.setEmail(userDTO.getEmail());
-            userToEdit.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             return userRepository.save(userToEdit);
         });
 
-        return userStream.get();
+        return userDTO;
     }
 }

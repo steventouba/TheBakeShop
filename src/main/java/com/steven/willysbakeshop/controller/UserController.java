@@ -13,9 +13,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,12 +56,12 @@ public class UserController {
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUser(@RequestBody @Valid UserDTO userDTO)  {
-       if (userService.registerNewUserAccount(userDTO)) {
-           userDTO.setPassword("");
-           return ResponseEntity.ok(userDTO);
-       } else {
-           return ResponseEntity.unprocessableEntity().body("Creation failed");
-       }
+        UserDTO created = userService.registerNewUserAccount(userDTO);
+        URI location = MvcUriComponentsBuilder
+                .fromMethodName(UserController.class, "getUserById", userDTO.getId())
+                .buildAndExpand(userDTO.getId())
+                .toUri();
+       return ResponseEntity.created(location).body(created);
     }
 
     @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)
@@ -78,10 +80,10 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody @Valid UserDTO userDTO) throws NotFoundException {
-       User user = userService.alterUserAccount(userDTO, id);
+    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody @Valid UserDTO userDTO) throws NotFoundException {
+       UserDTO alteredUser = userService.alterUserAccount(userDTO, id);
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(alteredUser);
     }
 
     @DeleteMapping(value = "/{id}/delete")
