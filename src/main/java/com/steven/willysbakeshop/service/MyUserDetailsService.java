@@ -1,4 +1,4 @@
-package com.steven.willysbakeshop.configuration;
+package com.steven.willysbakeshop.service;
 
 import com.steven.willysbakeshop.model.MyUserDetails;
 import com.steven.willysbakeshop.model.User;

@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.steven.willysbakeshop.model.User;
+import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.service.UserService;
 import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private UserService userService;
 
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping() {
@@ -52,11 +53,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createUser(@RequestBody @Valid User newUser)  {
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        User user = userRepository.save(newUser);
-
-        return ResponseEntity.ok(user);
+    public ResponseEntity<Object> createUser(@RequestBody @Valid UserDTO userDTO)  {
+       if (userService.registerNewUserAccount(userDTO)) {
+           userDTO.setPassword("");
+           return ResponseEntity.ok(userDTO);
+       } else {
+           return ResponseEntity.unprocessableEntity().body("Creation failed");
+       }
     }
 
     @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)
@@ -75,19 +78,10 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody @Valid User newUser) throws NotFoundException {
-        Optional<User> user = userRepository.findById(id);
-        user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
+    public ResponseEntity<User> editUser(@PathVariable long id, @RequestBody @Valid UserDTO userDTO) throws NotFoundException {
+       User user = userService.alterUserAccount(userDTO, id);
 
-        Optional<User> userStream = user.map(user1 -> {
-            user1.setFirstName(newUser.getFirstName());
-            user1.setLastName(newUser.getLastName());
-            user1.setEmail(newUser.getEmail());
-            user1.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            return userRepository.save(user1);
-        });
-
-        return ResponseEntity.ok(userStream.get());
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping(value = "/{id}/delete")

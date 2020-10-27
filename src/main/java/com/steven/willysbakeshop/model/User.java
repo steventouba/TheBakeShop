@@ -39,11 +39,32 @@ public class User {
     @JsonCreator
     public User() {}
 
-    public User(String firstName, String lastName, String email) {
+    public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password = password;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public Set<Product> getProducts() { return products; }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() { return  password; }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -58,28 +79,6 @@ public class User {
     }
 
     public void setPassword(String password) { this.password = password; }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Set<Product> getProducts() {
-        return products;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() { return  password; }
 
     @Override
     public boolean equals(Object o) {
