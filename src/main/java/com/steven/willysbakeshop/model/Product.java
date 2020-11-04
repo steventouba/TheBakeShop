@@ -23,7 +23,7 @@ public class Product {
     private String description;
 
     @JsonProperty("seller-id")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 

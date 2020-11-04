@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
@@ -55,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createUser(@RequestBody @Valid UserDTO userDTO)  {
+    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO)  {
         UserDTO created = userService.registerNewUserAccount(userDTO);
         URI location = MvcUriComponentsBuilder
                 .fromMethodName(UserController.class, "getUserById", userDTO.getId())
@@ -80,7 +79,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody @Valid UserDTO userDTO) throws NotFoundException {
+    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody UserDTO userDTO) throws NotFoundException {
        UserDTO alteredUser = userService.alterUserAccount(userDTO, id);
 
         return ResponseEntity.ok(alteredUser);
