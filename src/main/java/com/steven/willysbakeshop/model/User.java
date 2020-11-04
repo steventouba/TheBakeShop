@@ -33,7 +33,7 @@ public class User {
     @Column(name = "password_digest")
     private String password;
 
-    @OneToMany(mappedBy = "seller", fetch = FetchType.EAGER, cascade =  CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
     private Set<Product> products;
 
     @JsonCreator
