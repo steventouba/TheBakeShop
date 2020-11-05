@@ -6,7 +6,6 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.steven.willysbakeshop.model.Product;
 import com.steven.willysbakeshop.model.ProductDTO;
 import com.steven.willysbakeshop.repository.ProductRepository;
-import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.service.ProductService;
 import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +28,6 @@ public class ProductController {
 
     @Autowired
     ProductRepository productRepository;
-
-    @Autowired
-    UserRepository userRepository;
 
     @Autowired
     ProductService productService;

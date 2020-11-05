@@ -54,7 +54,7 @@ public class ProductService {
     public List<ProductDTO> findAll() {
         List<Product> products = productRepository.findAll();
 
-        List<ProductDTO> collect = products
+       return products
                 .stream()
                 .map(product -> {
                     ProductDTO productDTO = new ProductDTO();
@@ -64,7 +64,5 @@ public class ProductService {
                     return productDTO;
                 })
                 .collect(Collectors.toList());
-
-        return collect;
     }
 }

@@ -9,7 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -19,6 +21,34 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    public List<UserDTO> findAll() {
+        List<User> users = userRepository.findAll();
+
+      return users
+                .stream()
+                .map(user -> {
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setFirstName(user.getFirstName());
+                    userDTO.setLastName(user.getLastName());
+                    userDTO.setEmail(user.getEmail());
+                    return userDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public UserDTO findById(long id) throws  NotFoundException {
+        Optional<User> user = userRepository.findById(id);
+
+        user.orElseThrow(() -> new NotFoundException("Could not locate userDTO"));
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setFirstName(user.get().getFirstName());
+        userDTO.setLastName(user.get().getLastName());
+        userDTO.setEmail(user.get().getEmail());
+
+        return userDTO;
+    }
 
     @Transactional
     public UserDTO registerNewUserAccount(UserDTO userDTO) {
@@ -31,7 +61,6 @@ public class UserService {
         userRepository.save(user);
 
         userDTO.setPassword("");
-        userDTO.setId(user.getId());
         return userDTO;
     }
 

@@ -39,18 +39,17 @@ public class UserController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity<List<User>> getUsers() {
-        List<User> all = userRepository.findAll();
+    public ResponseEntity<List<UserDTO>> getUsers() {
+        List<UserDTO> users = userService.findAll();
 
-        return ResponseEntity.ok(all);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable long id) throws NotFoundException {
-        Optional<User> user = userRepository.findById(id);
-        user.orElseThrow(() -> new NotFoundException(String.format("User: %d does not exist", id)));
+    public ResponseEntity<UserDTO> getUserById(@PathVariable long id) throws NotFoundException {
+        UserDTO user = userService.findById(id);
 
-        return ResponseEntity.ok(user.get());
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
