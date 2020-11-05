@@ -27,13 +27,12 @@ public class UserService {
 
       return users
                 .stream()
-                .map(user -> {
-                    UserDTO userDTO = new UserDTO();
-                    userDTO.setFirstName(user.getFirstName());
-                    userDTO.setLastName(user.getLastName());
-                    userDTO.setEmail(user.getEmail());
-                    return userDTO;
-                })
+                .map(user -> new UserDTO.Builder(
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail()
+                )
+                        .build())
                 .collect(Collectors.toList());
     }
 
@@ -42,12 +41,12 @@ public class UserService {
 
         user.orElseThrow(() -> new NotFoundException("Could not locate userDTO"));
 
-        UserDTO userDTO = new UserDTO();
-        userDTO.setFirstName(user.get().getFirstName());
-        userDTO.setLastName(user.get().getLastName());
-        userDTO.setEmail(user.get().getEmail());
-
-        return userDTO;
+        return new UserDTO.Builder(
+                user.get().getFirstName(),
+                user.get().getLastName(),
+                user.get().getEmail()
+        )
+                .build();
     }
 
     @Transactional
@@ -60,8 +59,12 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         userRepository.save(user);
 
-        userDTO.setPassword("");
-        return userDTO;
+        return new UserDTO.Builder(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail()
+        )
+                .build();
     }
 
     @Transactional

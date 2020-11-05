@@ -1,39 +1,37 @@
 package com.steven.willysbakeshop.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import java.util.Set;
 
+@JsonDeserialize(builder = UserDTO.Builder.class)
 public class UserDTO {
 
     private long id;
 
     @JsonProperty("first-name")
-    private String firstName;
+    private final String firstName;
 
     @JsonProperty("last-name")
-    private String lastName;
+    private final String lastName;
 
     @JsonProperty
-    private String email;
+    private final String email;
 
-    private String password;
+    private final String password;
 
-    private Set<Product> products;
+    private final Set<Product> products;
 
-    public UserDTO() {}
+//    public UserDTO() {}
 
-    public UserDTO(String firstName, String lastName, String email, String password) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-    }
-
-    public UserDTO(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    private UserDTO(Builder builder) {
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.products = builder.products;
     }
 
     public long getId() { return id; }
@@ -58,27 +56,61 @@ public class UserDTO {
         return products;
     }
 
-//    public void  setId(long id) { this.id = id; }
+
+//    public void setFirstName(String firstName) {
+//        this.firstName = firstName;
+//    }
+//
+//    public void setLastName(String lastName) {
+//        this.lastName = lastName;
+//    }
+//
+//    public void setEmail(String email) {
+//        this.email = email;
+//    }
+//
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
+//
+//    public void setProducts(Set<Product> products) {
+//        this.products = products;
+//    }
+    @JsonPOJOBuilder
+    public static class Builder{
+
+        private long id;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String password;
+        private Set<Product> products;
 
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+        public Builder(String firstName, String lastName, String email) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.email = email;
+        }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+        public Builder withId(long id) {
+            this.id = id;
+            return this;
+        }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+        public Builder withPassword(String password) {
+            this.password = password;
+            return this;
+        }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+        public Builder withProducts(Set<Product> products) {
+            this.products = products;
+            return this;
+        }
 
-    public void setProducts(Set<Product> products) {
-        this.products = products;
+        public UserDTO build() {
+            return new UserDTO(this);
+        }
     }
 
 }
