@@ -1,5 +1,6 @@
 package com.steven.willysbakeshop.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -10,21 +11,11 @@ import java.util.Set;
 public class UserDTO {
 
     private long id;
-
-    @JsonProperty("first-name")
     private final String firstName;
-
-    @JsonProperty("last-name")
     private final String lastName;
-
-    @JsonProperty
     private final String email;
-
     private final String password;
-
     private final Set<Product> products;
-
-//    public UserDTO() {}
 
     private UserDTO(Builder builder) {
         this.firstName = builder.firstName;
@@ -56,36 +47,22 @@ public class UserDTO {
         return products;
     }
 
-
-//    public void setFirstName(String firstName) {
-//        this.firstName = firstName;
-//    }
-//
-//    public void setLastName(String lastName) {
-//        this.lastName = lastName;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
-//    public void setProducts(Set<Product> products) {
-//        this.products = products;
-//    }
     @JsonPOJOBuilder
     public static class Builder{
 
         private long id;
+
+        @JsonAlias("first-name")
+        @JsonProperty
         private String firstName;
+
+        @JsonAlias("last-name")
+        @JsonProperty
         private String lastName;
+
         private String email;
         private String password;
         private Set<Product> products;
-
 
         public Builder(String firstName, String lastName, String email) {
             this.firstName = firstName;

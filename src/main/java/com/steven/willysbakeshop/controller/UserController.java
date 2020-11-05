@@ -8,11 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -45,15 +44,15 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-//    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO)  {
-//        UserDTO created = userService.registerNewUserAccount(userDTO);
-//        URI location = MvcUriComponentsBuilder
-//                .fromMethodName(UserController.class, "getUserById", userDTO.getId())
-//                .buildAndExpand(userDTO.getId())
-//                .toUri();
-//       return ResponseEntity.created(location).body(created);
-//    }
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO)  {
+        UserDTO created = userService.registerNewUserAccount(userDTO);
+        URI location = MvcUriComponentsBuilder
+                .fromMethodName(UserController.class, "getUserById", userDTO.getId())
+                .buildAndExpand(userDTO.getId())
+                .toUri();
+       return ResponseEntity.created(location).body(created);
+    }
 //
 //    @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)
 //    public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
