@@ -5,9 +5,9 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.steven.willysbakeshop.model.Product;
 import com.steven.willysbakeshop.model.ProductDTO;
-import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.repository.ProductRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.service.ProductService;
 import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,36 +33,31 @@ public class ProductController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ProductService productService;
+
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping() {
         return ResponseEntity.ok("OK");
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity<List<Product>> getProducts() {
-        List<Product> products = productRepository.findAll();
+    public ResponseEntity<List<ProductDTO>> getProducts() {
+        List<ProductDTO> products = productService.findAll();
 
         return ResponseEntity.ok(products);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable long id) throws NotFoundException {
-        Optional<Product> product = productRepository.findById(id);
-        product.orElseThrow(() -> new NotFoundException(String.format("product: %d does not exist", id)));
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable long id) throws NotFoundException {
+       ProductDTO productDTO = productService.getById(id);
 
-        return ResponseEntity.ok(product.get());
+        return ResponseEntity.ok(productDTO);
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createProducts(@RequestBody ProductDTO productDTO ) {
-        Optional<User> user = userRepository.findById(productDTO.getSeller());
-        if (!user.isPresent()) { throw new NotFoundException("Could not locate listed seller"); }
-
-        Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setSeller(user.get());
-        productRepository.save(product);
+    public ResponseEntity<Product> createProducts(@RequestBody ProductDTO productDTO ) throws NotFoundException {
+        Product product = productService.registerProduct(productDTO);
 
         return ResponseEntity.ok(product);
     }

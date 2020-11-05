@@ -43,19 +43,19 @@ public class Product {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
+    }
+
+    public User getSeller() { return seller; }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public User getSeller() { return seller; }
 
     public void setSeller(User seller) { this.seller = seller; }
 

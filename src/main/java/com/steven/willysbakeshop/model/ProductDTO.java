@@ -4,9 +4,13 @@ import java.io.Serializable;
 
 public class ProductDTO implements Serializable {
 
-    private final long seller;
-    private final String description;
-    private final String name;
+    private long seller;
+    private String description;
+    private String name;
+
+    public ProductDTO() {
+
+    }
 
     public ProductDTO(String name, String description, long sellerId) {
         this.name = name;
@@ -24,5 +28,17 @@ public class ProductDTO implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public void setSeller(long seller) {
+        this.seller = seller;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

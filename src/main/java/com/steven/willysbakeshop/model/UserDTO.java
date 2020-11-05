@@ -2,10 +2,9 @@ package com.steven.willysbakeshop.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.Serializable;
 import java.util.Set;
 
-public class UserDTO implements Serializable {
+public class UserDTO {
 
     private long id;
 

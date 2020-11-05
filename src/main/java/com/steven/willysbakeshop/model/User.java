@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,8 +34,8 @@ public class User {
     @Column(name = "password_digest")
     private String password;
 
-    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY)
-    private Set<Product> products;
+    @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Product> products = new HashSet<>();
 
     @JsonCreator
     public User() {}
@@ -58,13 +59,13 @@ public class User {
         return lastName;
     }
 
-    public Set<Product> getProducts() { return products; }
-
     public String getEmail() {
         return email;
     }
 
     public String getPassword() { return  password; }
+
+    public Set<Product> getProducts() { return products; }
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -79,6 +80,11 @@ public class User {
     }
 
     public void setPassword(String password) { this.password = password; }
+
+    public void setProducts(Product product) {
+        products.add(product);
+        product.setSeller(this);
+    }
 
     @Override
     public boolean equals(Object o) {
