@@ -1,10 +1,8 @@
 package com.steven.willysbakeshop.model;
 
-import java.io.Serializable;
+public class ProductDTO {
 
-public class ProductDTO implements Serializable {
-
-    private long seller;
+    private UserDTO seller;
     private String description;
     private String name;
 
@@ -12,13 +10,19 @@ public class ProductDTO implements Serializable {
 
     }
 
-    public ProductDTO(String name, String description, long sellerId) {
+    public ProductDTO(String name, String description) {
         this.name = name;
         this.description = description;
-        this.seller = sellerId;
     }
 
-    public long getSeller() {
+    public ProductDTO(String name, String description, UserDTO seller) {
+        this.name = name;
+        this.description = description;
+        this.seller = seller;
+    }
+
+
+    public UserDTO getSeller() {
         return seller;
     }
 
@@ -30,13 +34,11 @@ public class ProductDTO implements Serializable {
         return name;
     }
 
-    public void setSeller(long seller) {
+    public void setSeller(UserDTO seller) {
         this.seller = seller;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
     public void setName(String name) {
         this.name = name;

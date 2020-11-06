@@ -1,5 +1,6 @@
 package com.steven.willysbakeshop.controller;
 
+import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -69,20 +71,20 @@ public class UserController {
 //        return ResponseEntity.ok("OK");
 //    }
 //
-//    @PutMapping(value = "/{id}/edit")
-//    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody UserDTO userDTO) throws NotFoundException {
-//       UserDTO alteredUser = userService.alterUserAccount(userDTO, id);
-//
-//        return ResponseEntity.ok(alteredUser);
-//    }
-//
-//    @DeleteMapping(value = "/{id}/delete")
-//    public ResponseEntity<User> deleteUser(@PathVariable long id) throws NotFoundException {
-//        Optional<User> user = userRepository.findById(id);
-//        user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
-//        userRepository.delete(user.get());
-//
-//        return ResponseEntity.ok(user.get());
-//    }
+    @PutMapping(value = "/{id}/edit")
+    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody UserDTO userDTO) throws NotFoundException {
+       UserDTO alteredUser = userService.alterUserAccount(userDTO, id);
+
+        return ResponseEntity.ok(alteredUser);
+    }
+
+    @DeleteMapping(value = "/{id}/delete")
+    public ResponseEntity<User> deleteUser(@PathVariable long id) throws NotFoundException {
+        Optional<User> user = userRepository.findById(id);
+        user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
+        userRepository.delete(user.get());
+
+        return ResponseEntity.ok(user.get());
+    }
 
 }

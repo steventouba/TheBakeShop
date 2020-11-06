@@ -1,6 +1,7 @@
 package com.steven.willysbakeshop.model;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -8,16 +9,18 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.Set;
 
 @JsonDeserialize(builder = UserDTO.Builder.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
-    private long id;
+    private final Long id;
     private final String firstName;
     private final String lastName;
     private final String email;
     private final String password;
-    private final Set<Product> products;
+    private final Set<ProductDTO> products;
 
     private UserDTO(Builder builder) {
+        this.id = builder.id;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.email = builder.email;
@@ -25,7 +28,7 @@ public class UserDTO {
         this.products = builder.products;
     }
 
-    public long getId() { return id; }
+    public Long getId() { return id; }
 
     public String getFirstName() {
         return firstName;
@@ -43,14 +46,12 @@ public class UserDTO {
         return password;
     }
 
-    public Set<Product> getProducts() {
-        return products;
-    }
+    public Set<ProductDTO> getProducts() { return products; }
 
     @JsonPOJOBuilder
-    public static class Builder{
+    public static class Builder {
 
-        private long id;
+        private Long id;
 
         @JsonAlias("first-name")
         @JsonProperty
@@ -62,7 +63,7 @@ public class UserDTO {
 
         private String email;
         private String password;
-        private Set<Product> products;
+        private Set<ProductDTO> products;
 
         public Builder(String firstName, String lastName, String email) {
             this.firstName = firstName;
@@ -70,7 +71,7 @@ public class UserDTO {
             this.email = email;
         }
 
-        public Builder withId(long id) {
+        public Builder withId(Long id) {
             this.id = id;
             return this;
         }
@@ -80,7 +81,7 @@ public class UserDTO {
             return this;
         }
 
-        public Builder withProducts(Set<Product> products) {
+        public Builder withProducts(Set<ProductDTO> products) {
             this.products = products;
             return this;
         }

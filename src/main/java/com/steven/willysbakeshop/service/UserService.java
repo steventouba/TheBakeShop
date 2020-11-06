@@ -1,5 +1,7 @@
 package com.steven.willysbakeshop.service;
 
+import com.steven.willysbakeshop.model.Product;
+import com.steven.willysbakeshop.model.ProductDTO;
 import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.UserRepository;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +49,7 @@ public class UserService {
                 user.get().getLastName(),
                 user.get().getEmail()
         )
+                .withProducts(mapProductsToUser(user.get().getProducts()))
                 .build();
     }
 
@@ -80,5 +84,12 @@ public class UserService {
         });
 
         return userDTO;
+    }
+
+    private Set<ProductDTO> mapProductsToUser(Set<Product> products) {
+       return products
+                .stream()
+                .map(product -> new ProductDTO(product.getName(), product.getDescription()))
+                .collect(Collectors.toSet());
     }
 }

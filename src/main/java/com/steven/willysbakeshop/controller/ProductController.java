@@ -52,10 +52,10 @@ public class ProductController {
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Product> createProducts(@RequestBody ProductDTO productDTO ) throws NotFoundException {
-        Product product = productService.registerProduct(productDTO);
+    public ResponseEntity<ProductDTO> createProducts(@RequestBody ProductDTO productDTO ) throws NotFoundException {
+        ProductDTO registeredProduct = productService.registerProduct(productDTO);
 
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(registeredProduct);
     }
 
     @PostMapping(value = "/create", consumes = TEXT_CSV_VALUE)

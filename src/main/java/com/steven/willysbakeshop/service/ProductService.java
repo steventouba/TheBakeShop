@@ -3,6 +3,7 @@ package com.steven.willysbakeshop.service;
 import com.steven.willysbakeshop.model.Product;
 import com.steven.willysbakeshop.model.ProductDTO;
 import com.steven.willysbakeshop.model.User;
+import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.ProductRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
@@ -22,35 +23,6 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-
-    @Transactional
-    public Product registerProduct(ProductDTO productDTO) throws NotFoundException {
-        Optional<User> user = userRepository.findById(productDTO.getSeller());
-
-        user.orElseThrow(() -> new NotFoundException("Could not locate listed seller"));
-
-        Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        user.get().setProducts(product);
-        productRepository.save(product);
-
-        return product;
-    }
-
-    public ProductDTO getById(long id) throws NotFoundException {
-        Optional<Product> product = productRepository.findById(id);
-
-        product.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
-
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setName(product.get().getName());
-        productDTO.setDescription(product.get().getDescription());
-        productDTO.setSeller(product.get().getSeller().getId());
-
-        return productDTO;
-    }
-
     public List<ProductDTO> findAll() {
         List<Product> products = productRepository.findAll();
 
@@ -60,9 +32,54 @@ public class ProductService {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setName(product.getName());
                     productDTO.setDescription(product.getDescription());
-                    productDTO.setSeller(product.getSeller().getId());
+                    productDTO.setSeller(mapSellerDetails(product.getSeller()));
                     return productDTO;
                 })
                 .collect(Collectors.toList());
     }
+
+    public ProductDTO getById(long id) throws NotFoundException {
+        Optional<Product> productOptional = productRepository.findById(id);
+
+        productOptional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
+
+        Product product = productOptional.get();
+
+
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setName(product.getName());
+        productDTO.setDescription(product.getDescription());
+        productDTO.setSeller(mapSellerDetails(product.getSeller()));
+
+        return productDTO;
+    }
+
+    @Transactional
+    public ProductDTO registerProduct(ProductDTO productDTO) throws NotFoundException {
+        Optional<User> user = userRepository.findById(productDTO.getSeller().getId());
+
+        user.orElseThrow(() -> new NotFoundException("Could not locate listed seller"));
+
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        user.get().setProducts(product);
+        productRepository.save(product);
+
+        return new ProductDTO(
+                product.getName(),
+                product.getDescription(),
+                mapSellerDetails(product.getSeller())
+        );
+    }
+
+    private UserDTO mapSellerDetails(User user) {
+        return new UserDTO.Builder(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail()
+        )
+                .build();
+    }
+
 }
