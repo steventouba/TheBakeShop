@@ -49,10 +49,12 @@ public class UserController {
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO)  {
         UserDTO created = userService.registerNewUserAccount(userDTO);
+
         URI location = MvcUriComponentsBuilder
-                .fromMethodName(UserController.class, "getUserById", userDTO.getId())
-                .buildAndExpand(userDTO.getId())
+                .fromMethodName(UserController.class, "getUserById", created.getId())
+                .buildAndExpand(created.getId())
                 .toUri();
+
        return ResponseEntity.created(location).body(created);
     }
 //

@@ -12,3 +12,14 @@ CREATE TABLE products(
     description VARCHAR(80) NOT NULL,
     seller_id BIGINT references users(id) NOT NULL
 );
+
+CREATE TABLE roles(
+    id SERIAL PRIMARY KEY ,
+    role, VARCHAR(80) NOT NULL,
+)
+
+CREATE TABLE user_roles(
+    role_id references roles(id) NOT NULL,
+    user_id references users(id) NOT NULL,
+    PRIMARY KEY(role_id, user_id)
+)

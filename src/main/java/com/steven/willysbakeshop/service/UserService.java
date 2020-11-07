@@ -68,6 +68,7 @@ public class UserService {
                 user.getLastName(),
                 user.getEmail()
         )
+                .withId(user.getId())
                 .build();
     }
 
