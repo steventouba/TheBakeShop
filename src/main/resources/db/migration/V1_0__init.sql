@@ -13,13 +13,15 @@ CREATE TABLE products(
     seller_id BIGINT references users(id) NOT NULL
 );
 
+CREATE TYPE role AS ENUM('BUYER', 'SELLER', 'ADMIN');
+
 CREATE TABLE roles(
-    id SERIAL PRIMARY KEY ,
-    role, VARCHAR(80) NOT NULL,
-)
+    id SERIAL PRIMARY KEY,
+    name role NOT NULL
+);
 
 CREATE TABLE user_roles(
-    role_id references roles(id) NOT NULL,
-    user_id references users(id) NOT NULL,
+    role_id INTEGER references roles(id) NOT NULL,
+    user_id BIGINT references users(id) NOT NULL,
     PRIMARY KEY(role_id, user_id)
-)
+);

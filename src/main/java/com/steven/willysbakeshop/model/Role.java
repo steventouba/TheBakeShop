@@ -1,6 +1,7 @@
 package com.steven.willysbakeshop.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "roles", schema = "public")
@@ -10,7 +11,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String name;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private enum name;
 
     public Role() {
 
