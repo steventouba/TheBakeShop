@@ -13,7 +13,7 @@ public class Role {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private enum name;
+    private RoleType name;
 
     public Role() {
 
@@ -27,11 +27,11 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
+    public RoleType getName() {
         return name;
     }
 
-    public void setName(String role) {
+    public void setName(RoleType role) {
         this.name = role;
     }
 }
