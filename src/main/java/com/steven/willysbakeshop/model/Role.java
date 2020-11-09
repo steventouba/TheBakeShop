@@ -1,5 +1,7 @@
 package com.steven.willysbakeshop.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -13,10 +15,15 @@ public class Role {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private RoleType name;
+    private ERole role;
 
+    @JsonCreator
     public Role() {
 
+    }
+
+    public Role(ERole role) {
+    this.role = role;
     }
 
     public long getId() {
@@ -27,11 +34,11 @@ public class Role {
         this.id = id;
     }
 
-    public RoleType getName() {
-        return name;
+    public ERole getRole() {
+        return role;
     }
 
-    public void setName(RoleType role) {
-        this.name = role;
+    public void setRole(ERole role) {
+        this.role = role;
     }
 }

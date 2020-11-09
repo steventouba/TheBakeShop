@@ -1,6 +1,6 @@
 package com.steven.willysbakeshop.model;
 
-public enum RoleType {
+public enum ERole {
     BUYER,
     SELLER,
     ADMIN

@@ -100,8 +100,8 @@ public class User {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRoles(Role role) {
+        this.roles.add(role);
     }
 
     @Override
@@ -129,4 +129,5 @@ public class User {
                 ", email='" + email + '\'' +
                 '}';
     }
+
 }

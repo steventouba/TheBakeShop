@@ -13,11 +13,9 @@ CREATE TABLE products(
     seller_id BIGINT references users(id) NOT NULL
 );
 
-CREATE TYPE role AS ENUM('BUYER', 'SELLER', 'ADMIN');
-
 CREATE TABLE roles(
     id SERIAL PRIMARY KEY,
-    name role NOT NULL
+    role VARCHAR(80) NOT NULL
 );
 
 CREATE TABLE user_roles(

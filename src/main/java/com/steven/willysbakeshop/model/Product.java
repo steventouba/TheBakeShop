@@ -27,7 +27,7 @@ public class Product {
     @JoinColumn(name = "seller_id", nullable = false)
     private User seller;
 
-    public Product() {};
+    public Product() {}
 
     public Product(String name, String description, User seller) {
         this.name = name;

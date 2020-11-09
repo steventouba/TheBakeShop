@@ -1,9 +1,6 @@
 package com.steven.willysbakeshop.service;
 
-import com.steven.willysbakeshop.model.Product;
-import com.steven.willysbakeshop.model.ProductDTO;
-import com.steven.willysbakeshop.model.User;
-import com.steven.willysbakeshop.model.UserDTO;
+import com.steven.willysbakeshop.model.*;
 import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +58,7 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setRoles(new Role(ERole.BUYER));
         userRepository.save(user);
 
         return new UserDTO.Builder(
