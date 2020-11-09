@@ -58,7 +58,7 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRoles(new Role(ERole.BUYER));
+        user.setRoles(new Role("ROLE_BUYER"));
         userRepository.save(user);
 
         return new UserDTO.Builder(

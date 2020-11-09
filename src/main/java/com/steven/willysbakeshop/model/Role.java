@@ -3,7 +3,6 @@ package com.steven.willysbakeshop.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "roles", schema = "public")
@@ -13,16 +12,14 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private ERole role;
+    private String role;
 
     @JsonCreator
     public Role() {
 
     }
 
-    public Role(ERole role) {
+    public Role(String role) {
     this.role = role;
     }
 
@@ -34,11 +31,11 @@ public class Role {
         this.id = id;
     }
 
-    public ERole getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(ERole role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }

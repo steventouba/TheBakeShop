@@ -1,6 +1,6 @@
 package com.steven.willysbakeshop.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.steven.willysbakeshop.service.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,32 +15,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    @Override
+    @Bean
+    protected UserDetailsService userDetailsService() {
+        return new MyUserDetailsService();
+    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-       auth.userDetailsService(userDetailsService).passwordEncoder(getPasswordEncoder());
+       auth.userDetailsService(userDetailsService()).passwordEncoder(getPasswordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/products/create").hasRole("SELLER")
-                    .antMatchers("/products/{id: \\d+}/*}").hasRole("SELLER")
-                    .antMatchers("/users/{id: \\d+}/*").hasAnyRole(
-                            "BUYER",
-                                    "SELLER",
-                                    "ADMIN"
-                    )
+                    .antMatchers("/products/(\\d+}/*}").hasRole("SELLER")
+                    .antMatchers("/users/{\\d+}/*").hasAnyRole("SELLER", "BUYER", "ADMIN")
                     .antMatchers("/**").permitAll()
-                    .anyRequest().authenticated()
                 .and()
-                .formLogin().permitAll()
+                    .formLogin().permitAll()
                 .and()
-                .logout().permitAll();
+                    .logout().permitAll()
+                .and()
+                .csrf().disable()
+        ;
 
     }
 

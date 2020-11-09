@@ -33,7 +33,7 @@ public class MyUserDetails implements org.springframework.security.core.userdeta
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
         for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getRole().name()));
+            authorities.add(new SimpleGrantedAuthority(role.getRole()));
         }
 
         return authorities;

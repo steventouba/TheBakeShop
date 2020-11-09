@@ -1,7 +1,7 @@
 package com.steven.willysbakeshop.model;
 
 public enum ERole {
-    BUYER,
-    SELLER,
-    ADMIN
+    ROLE_BUYER,
+    ROLE_SELLER,
+    ROLE_ADMIN
 }
