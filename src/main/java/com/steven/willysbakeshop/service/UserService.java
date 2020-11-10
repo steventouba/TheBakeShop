@@ -32,6 +32,7 @@ public class UserService {
                         user.getLastName(),
                         user.getEmail()
                 )
+                        .withId(user.getId())
                         .withSelfLink(user.getId())
                         .build())
                 .collect(Collectors.toList());

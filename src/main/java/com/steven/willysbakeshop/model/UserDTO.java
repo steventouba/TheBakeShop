@@ -21,7 +21,7 @@ public class UserDTO {
     private final String email;
     private final String password;
     private final Set<ProductDTO> products;
-    private final String self;
+    private final String link;
 
     private UserDTO(Builder builder) {
         this.id = builder.id;
@@ -30,7 +30,7 @@ public class UserDTO {
         this.email = builder.email;
         this.password = builder.password;
         this.products = builder.products;
-        this.self =  builder.self;
+        this.link =  builder.self;
     }
 
     public Long getId() { return id; }
@@ -53,7 +53,7 @@ public class UserDTO {
 
     public Set<ProductDTO> getProducts() { return products; }
 
-    public String getSelf() { return self; }
+    public String getSelf() { return link; }
 
     @JsonPOJOBuilder
     public static class Builder {
