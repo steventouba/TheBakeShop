@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.steven.willysbakeshop.controller.UserController;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Set;
 
 @JsonDeserialize(builder = UserDTO.Builder.class)
@@ -18,6 +21,7 @@ public class UserDTO {
     private final String email;
     private final String password;
     private final Set<ProductDTO> products;
+    private final String self;
 
     private UserDTO(Builder builder) {
         this.id = builder.id;
@@ -26,6 +30,7 @@ public class UserDTO {
         this.email = builder.email;
         this.password = builder.password;
         this.products = builder.products;
+        this.self =  builder.self;
     }
 
     public Long getId() { return id; }
@@ -48,6 +53,8 @@ public class UserDTO {
 
     public Set<ProductDTO> getProducts() { return products; }
 
+    public String getSelf() { return self; }
+
     @JsonPOJOBuilder
     public static class Builder {
 
@@ -64,6 +71,7 @@ public class UserDTO {
         private String email;
         private String password;
         private Set<ProductDTO> products;
+        private String self;
 
         public Builder(String firstName, String lastName, String email) {
             this.firstName = firstName;
@@ -83,6 +91,15 @@ public class UserDTO {
 
         public Builder withProducts(Set<ProductDTO> products) {
             this.products = products;
+            return this;
+        }
+
+        public  Builder withSelfLink(long id) {
+            URI location = MvcUriComponentsBuilder
+                    .fromMethodName(UserController.class, "getUserById", id)
+                    .buildAndExpand(id)
+                    .toUri();
+            self = location.toString();
             return this;
         }
 
