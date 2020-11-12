@@ -1,4 +1,4 @@
-package com.steven.willysbakeshop.utilities.exceptions;
+package com.steven.willysbakeshop.util.exceptions;
 
 import org.springframework.http.HttpStatus;
 

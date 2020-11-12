@@ -1,6 +1,10 @@
 package com.steven.willysbakeshop.controller;
 
 
+import com.steven.willysbakeshop.util.exceptions.ErrorDetails;
+import com.steven.willysbakeshop.util.exceptions.NotFoundException;
+import com.steven.willysbakeshop.util.exceptions.ValidationErrorResponse;
+import com.steven.willysbakeshop.util.exceptions.Violation;
 import com.steven.willysbakeshop.utilities.exceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

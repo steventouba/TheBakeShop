@@ -1,10 +1,12 @@
 package com.steven.willysbakeshop.controller;
 
+import com.steven.willysbakeshop.model.ProductDTO;
 import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.service.ProductService;
 import com.steven.willysbakeshop.service.UserService;
-import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
+import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProductService productService;
 
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping() {
@@ -56,6 +61,16 @@ public class UserController {
                 .toUri();
 
        return ResponseEntity.created(location).body(created);
+    }
+
+    @PostMapping(value = "/{userId}/products/create")
+    public ResponseEntity<ProductDTO> createProduct(
+            @RequestBody ProductDTO productDTO,
+            @PathVariable long userId
+    ) throws NotFoundException {
+        ProductDTO product = productService.registerProduct(productDTO, userId);
+
+        return ResponseEntity.ok(product);
     }
 //
 //    @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)

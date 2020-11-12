@@ -6,7 +6,7 @@ import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.ProductRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
-import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
+import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +55,8 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO registerProduct(ProductDTO productDTO) throws NotFoundException {
-        Optional<User> user = userRepository.findById(productDTO.getSeller().getId());
+    public ProductDTO registerProduct(ProductDTO productDTO, long userId) throws NotFoundException {
+        Optional<User> user = userRepository.findById(userId);
 
         user.orElseThrow(() -> new NotFoundException("Could not locate listed seller"));
 

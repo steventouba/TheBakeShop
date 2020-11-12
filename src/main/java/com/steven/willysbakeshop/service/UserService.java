@@ -2,7 +2,7 @@ package com.steven.willysbakeshop.service;
 
 import com.steven.willysbakeshop.model.*;
 import com.steven.willysbakeshop.repository.UserRepository;
-import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
+import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

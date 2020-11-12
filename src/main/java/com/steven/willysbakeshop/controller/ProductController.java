@@ -7,7 +7,7 @@ import com.steven.willysbakeshop.model.Product;
 import com.steven.willysbakeshop.model.ProductDTO;
 import com.steven.willysbakeshop.repository.ProductRepository;
 import com.steven.willysbakeshop.service.ProductService;
-import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
+import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,12 +51,12 @@ public class ProductController {
         return ResponseEntity.ok(productDTO);
     }
 
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDTO> createProducts(@RequestBody ProductDTO productDTO ) throws NotFoundException {
-        ProductDTO registeredProduct = productService.registerProduct(productDTO);
-
-        return ResponseEntity.ok(registeredProduct);
-    }
+//    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<ProductDTO> createProducts(@RequestBody ProductDTO productDTO ) throws NotFoundException {
+//        ProductDTO registeredProduct = productService.registerProduct(productDTO, u);
+//
+//        return ResponseEntity.ok(registeredProduct);
+//    }
 
     @PostMapping(value = "/create", consumes = TEXT_CSV_VALUE)
     public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
