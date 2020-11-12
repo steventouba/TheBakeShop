@@ -44,8 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/products/create").hasRole("SELLER")
-                    .antMatchers("/products/(\\d+}/*}").hasRole("SELLER")
-                    .antMatchers("/users/{\\d+}/*").hasAnyRole("SELLER", "BUYER", "ADMIN")
+                    .antMatchers("/products/{id:\\d+}/*").hasRole("SELLER")
+                    .antMatchers("/users/{id:\\d+}/*").hasAnyRole("SELLER", "BUYER", "ADMIN")
                     .antMatchers("/**").permitAll()
                 .and()
                 .csrf().disable()

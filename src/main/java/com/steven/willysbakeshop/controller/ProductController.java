@@ -87,7 +87,7 @@ public class ProductController {
         return ResponseEntity.ok(body);
     }
 
-    @DeleteMapping(value = "{id}/delete")
+    @DeleteMapping(value = "/{id}/delete")
     public ResponseEntity<Product> deleteProduct(@PathVariable long id) {
         Optional<Product> product = productRepository.findById(id);
         product.orElseThrow(() -> new NotFoundException("Product not found"));
