@@ -3,6 +3,7 @@ package com.steven.willysbakeshop.configuration;
 import com.steven.willysbakeshop.service.MyUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,12 +16,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Override
     @Bean
-    protected UserDetailsService userDetailsService() {
-        return new MyUserDetailsService();
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -36,22 +41,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/users/{\\d+}/*").hasAnyRole("SELLER", "BUYER", "ADMIN")
                     .antMatchers("/**").permitAll()
                 .and()
-                    .formLogin()
-                        .defaultSuccessUrl("/users/")
-                        .permitAll()
-                .and()
-                    .logout().permitAll()
-                .and()
-                    .httpBasic()
-                .and()
                 .csrf().disable()
         ;
 
     }
 
-
+    @Override
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    protected UserDetailsService userDetailsService() {
+        return new MyUserDetailsService();
     }
+
 }

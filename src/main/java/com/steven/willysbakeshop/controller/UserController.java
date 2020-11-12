@@ -8,6 +8,7 @@ import com.steven.willysbakeshop.utilities.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -36,7 +37,7 @@ public class UserController {
     @GetMapping(value = "/")
     public ResponseEntity<List<UserDTO>> getUsers() {
         List<UserDTO> users = userService.findAll();
-
+        SecurityContextHolder.getContext().getAuthentiqcation()
         return ResponseEntity.ok(users);
     }
 
