@@ -6,8 +6,11 @@ import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.ProductRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.security.AuthenticationFacade;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,6 +25,9 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private AuthenticationFacade authenticationFacade;
 
     public List<ProductDTO> findAll() {
         List<Product> products = productRepository.findAll();
@@ -40,12 +46,9 @@ public class ProductService {
 
     public ProductDTO getById(long id) throws NotFoundException {
         Optional<Product> productOptional = productRepository.findById(id);
-
         productOptional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
 
         Product product = productOptional.get();
-
-
         ProductDTO productDTO = new ProductDTO();
         productDTO.setName(product.getName());
         productDTO.setDescription(product.getDescription());
@@ -55,9 +58,9 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO registerProduct(ProductDTO productDTO, long userId) throws NotFoundException {
-        Optional<User> user = userRepository.findById(userId);
-
+    public ProductDTO registerProduct(ProductDTO productDTO) throws NotFoundException {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        Optional<User> user = userRepository.findByEmail(authentication.getName());
         user.orElseThrow(() -> new NotFoundException("Could not locate listed seller"));
 
         Product product = new Product();
@@ -67,10 +70,45 @@ public class ProductService {
         productRepository.save(product);
 
         return new ProductDTO(
+                product.getId(),
                 product.getName(),
                 product.getDescription(),
                 mapSellerDetails(product.getSeller())
         );
+    }
+
+    @Transactional
+    public ProductDTO editProductDetails(long productId, ProductDTO productDTO) throws NotFoundException, BadCredentialsException {
+        Authentication authentication = authenticationFacade.getAuthentication();
+        Optional<Product> optional = productRepository.findById(productId);
+        optional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
+
+        Product product = optional.get();
+        if (!authenticationFacade.isPrincipalMatch(product.getSeller().getEmail())) {
+            throw new BadCredentialsException("Unauthorized");
+        }
+
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        productRepository.save(product);
+
+        productDTO.setSeller(mapSellerDetails(product.getSeller()));
+
+        return productDTO;
+    }
+
+    @Transactional
+    public boolean deleteProduct(long id) {
+        Optional<Product> optional = productRepository.findById(id);
+        optional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
+
+        Product product = optional.get();
+        if (!authenticationFacade.isPrincipalMatch(product.getSeller().getEmail())) {
+            throw new BadCredentialsException("Unauthorized");
+        }
+        productRepository.delete(product);
+
+        return true;
     }
 
     private UserDTO mapSellerDetails(User user) {

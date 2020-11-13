@@ -41,7 +41,7 @@ public class UserService {
     public UserDTO findById(long id) throws  NotFoundException {
         Optional<User> user = userRepository.findById(id);
 
-        user.orElseThrow(() -> new NotFoundException("Could not locate userDTO"));
+        user.orElseThrow(() -> new NotFoundException("Could not locate user"));
 
         return new UserDTO.Builder(
                 user.get().getFirstName(),
@@ -60,7 +60,7 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRoles(new Role("ROLE_BUYER"));
+        user.setRoles(new Role("ROLE_SELLER"));
         userRepository.save(user);
 
         return new UserDTO.Builder(

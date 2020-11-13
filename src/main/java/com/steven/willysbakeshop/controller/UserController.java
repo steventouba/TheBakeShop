@@ -1,6 +1,5 @@
 package com.steven.willysbakeshop.controller;
 
-import com.steven.willysbakeshop.model.ProductDTO;
 import com.steven.willysbakeshop.model.User;
 import com.steven.willysbakeshop.model.UserDTO;
 import com.steven.willysbakeshop.repository.UserRepository;
@@ -63,16 +62,6 @@ public class UserController {
        return ResponseEntity.created(location).body(created);
     }
 
-    @PostMapping(value = "/{userId}/products/create")
-    public ResponseEntity<ProductDTO> createProduct(
-            @RequestBody ProductDTO productDTO,
-            @PathVariable long userId
-    ) throws NotFoundException {
-        ProductDTO product = productService.registerProduct(productDTO, userId);
-
-        return ResponseEntity.ok(product);
-    }
-//
 //    @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)
 //    public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
 //

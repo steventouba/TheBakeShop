@@ -1,4 +1,4 @@
-package com.steven.willysbakeshop.configuration;
+package com.steven.willysbakeshop.security;
 
 import com.steven.willysbakeshop.filters.JwtRequestFilter;
 import com.steven.willysbakeshop.service.MyUserDetailsService;
