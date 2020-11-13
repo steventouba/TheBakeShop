@@ -32,6 +32,8 @@ public class User {
     @Column(name = "password_digest")
     private String password;
 
+    private boolean enabled;
+
     @OneToMany(mappedBy = "seller", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Product> products = new HashSet<>();
 
@@ -51,6 +53,7 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.enabled = false;
     }
 
     public long getId() {
@@ -87,6 +90,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Set<Product> getProducts() {

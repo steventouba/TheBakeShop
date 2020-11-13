@@ -1,8 +1,8 @@
 package com.steven.willysbakeshop.service;
 
 import com.steven.willysbakeshop.model.*;
+import com.steven.willysbakeshop.repository.TokenRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
-import com.steven.willysbakeshop.util.exceptions.AlreadyExistsException;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +22,9 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    private TokenRepository tokenRepository;
 
     public List<UserDTO> findAll() {
         List<User> users = userRepository.findAll();
@@ -53,28 +56,6 @@ public class UserService {
                 .build();
     }
 
-    @Transactional
-    public UserDTO registerNewUserAccount(UserDTO userDTO) throws AlreadyExistsException {
-        if (emailExists(userDTO.getEmail())) {
-            throw new AlreadyExistsException("There is an account with that email address");
-        }
-
-        User user = new User();
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRoles(new Role("ROLE_SELLER"));
-        userRepository.save(user);
-
-        return new UserDTO.Builder(
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail()
-        )
-                .withId(user.getId())
-                .build();
-    }
 
     @Transactional
     public UserDTO alterUserAccount(UserDTO userDTO, long id) throws NotFoundException {
@@ -91,6 +72,7 @@ public class UserService {
         return userDTO;
     }
 
+
     private Set<ProductDTO> mapProductsToUser(Set<Product> products) {
        return products
                 .stream()
@@ -98,7 +80,4 @@ public class UserService {
                 .collect(Collectors.toSet());
     }
 
-    private boolean emailExists(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
 }

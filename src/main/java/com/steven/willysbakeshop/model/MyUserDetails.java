@@ -12,6 +12,7 @@ public class MyUserDetails implements org.springframework.security.core.userdeta
     private  String lastName;
     private  String firstName;
     private String username;
+    private boolean enabled;
     private Set<Role> roles;
 
     public MyUserDetails(String username) {
@@ -25,6 +26,7 @@ public class MyUserDetails implements org.springframework.security.core.userdeta
         this.lastName = user.getLastName();
         this.username = user.getEmail();
         this.password = user.getPassword();
+        this.enabled = user.isEnabled();
         this.roles = user.getRoles();
     }
 
@@ -66,6 +68,6 @@ public class MyUserDetails implements org.springframework.security.core.userdeta
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.enabled;
     }
 }

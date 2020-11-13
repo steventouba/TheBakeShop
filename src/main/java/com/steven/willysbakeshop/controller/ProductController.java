@@ -47,7 +47,23 @@ public class ProductController {
         return ResponseEntity.ok(registeredProduct);
     }
 
-//    @PostMapping(value = "/create", consumes = TEXT_CSV_VALUE)
+
+    @DeleteMapping(value = "/{id}/delete")
+    public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
+        productService.deleteProduct(id);
+
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping(value = "/{id}/edit")
+    public ResponseEntity<ProductDTO> editProduct(@PathVariable long id, @RequestBody ProductDTO toEdit)
+            throws NotFoundException, BadCredentialsException {
+        ProductDTO productDetails = productService.editProductDetails(id, toEdit);
+
+        return ResponseEntity.ok(productDetails);
+    }
+
+    //    @PostMapping(value = "/create", consumes = TEXT_CSV_VALUE)
 //    public ResponseEntity<String> createProducts(@RequestBody String csv) throws IOException {
 //
 //        MappingIterator<Product> iterator = new CsvMapper()
@@ -61,19 +77,4 @@ public class ProductController {
 //
 //        return ResponseEntity.ok("OK");
 //    }
-
-    @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<ProductDTO> editProduct(@PathVariable long id, @RequestBody ProductDTO toEdit)
-            throws NotFoundException, BadCredentialsException {
-        ProductDTO productDetails = productService.editProductDetails(id, toEdit);
-
-        return ResponseEntity.ok(productDetails);
-    }
-
-    @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
-        productService.deleteProduct(id);
-
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
-    }
 }
