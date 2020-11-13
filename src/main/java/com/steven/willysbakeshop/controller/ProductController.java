@@ -4,6 +4,7 @@ import com.steven.willysbakeshop.model.ProductDTO;
 import com.steven.willysbakeshop.service.ProductService;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -70,9 +71,9 @@ public class ProductController {
     }
 
     @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<String> deleteProduct(@PathVariable long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
         productService.deleteProduct(id);
 
-        return ResponseEntity.status(201).body("Success");
+        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 }

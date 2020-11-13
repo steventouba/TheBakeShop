@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable long id) throws NotFoundException {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable long id) {
         UserDTO user = userService.findById(id);
 
         return ResponseEntity.ok(user);
@@ -78,14 +78,14 @@ public class UserController {
 //    }
 //
     @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody UserDTO userDTO) throws NotFoundException {
+    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody UserDTO userDTO) {
        UserDTO alteredUser = userService.alterUserAccount(userDTO, id);
 
         return ResponseEntity.ok(alteredUser);
     }
 
     @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<User> deleteUser(@PathVariable long id) throws NotFoundException {
+    public ResponseEntity<User> deleteUser(@PathVariable long id) {
         Optional<User> user = userRepository.findById(id);
         user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
         userRepository.delete(user.get());

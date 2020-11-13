@@ -1,10 +1,7 @@
 package com.steven.willysbakeshop.controller;
 
 
-import com.steven.willysbakeshop.util.exceptions.ErrorDetails;
-import com.steven.willysbakeshop.util.exceptions.NotFoundException;
-import com.steven.willysbakeshop.util.exceptions.ValidationErrorResponse;
-import com.steven.willysbakeshop.util.exceptions.Violation;
+import com.steven.willysbakeshop.util.exceptions.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +23,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
    @ExceptionHandler(NotFoundException.class)
     public final ResponseEntity<ErrorDetails> handleNotFoundException(NotFoundException ex, WebRequest request) {
     ErrorDetails errorDetails = new ErrorDetails(ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AlreadyExistsException.class)
+    public final ResponseEntity<ErrorDetails> handleNotFoundException(AlreadyExistsException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 

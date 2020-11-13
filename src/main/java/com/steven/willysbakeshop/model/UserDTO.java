@@ -70,6 +70,7 @@ public class UserDTO {
 
         private String email;
         private String password;
+        private String matchingPassword;
         private Set<ProductDTO> products;
         private String self;
 

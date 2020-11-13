@@ -43,7 +43,6 @@ public class ProductDTO {
         this.description = description;
     }
 
-
     public UserDTO getSeller() {
         return seller;
     }

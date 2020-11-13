@@ -13,4 +13,16 @@ public class ErrorDetails {
         this.message = message;
         this.details = details;
     }
+
+    public ZonedDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getDetails() {
+        return details;
+    }
 }

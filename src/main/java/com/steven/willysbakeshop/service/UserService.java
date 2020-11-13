@@ -2,6 +2,7 @@ package com.steven.willysbakeshop.service;
 
 import com.steven.willysbakeshop.model.*;
 import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.util.exceptions.AlreadyExistsException;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,7 +54,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO registerNewUserAccount(UserDTO userDTO) {
+    public UserDTO registerNewUserAccount(UserDTO userDTO) throws AlreadyExistsException {
+        if (emailExists(userDTO.getEmail())) {
+            throw new AlreadyExistsException("There is an account with that email address");
+        }
 
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
@@ -92,5 +96,9 @@ public class UserService {
                 .stream()
                 .map(product -> new ProductDTO(product.getName(), product.getDescription()))
                 .collect(Collectors.toSet());
+    }
+
+    private boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 }

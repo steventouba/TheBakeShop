@@ -2,6 +2,7 @@ package com.steven.willysbakeshop.model;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.steven.willysbakeshop.util.annotations.ValidEmail;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -23,6 +24,7 @@ public class User {
     @NotBlank(message = "Last Name may not be blank")
     private String lastName;
 
+    @ValidEmail
     @NotBlank(message = "Email may not be blank")
     private String email;
 
