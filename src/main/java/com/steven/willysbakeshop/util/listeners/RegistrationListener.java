@@ -36,9 +36,8 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         String userEmail = user.getEmail();
         String subject = "Registration Confirmation";
-        String confirmationUrl = event.getAppUrl() + "/registrationConfirmation?token=" + token;
+        String confirmationUrl = event.getAppUrl() + "/users/registrationConfirmation?token=" + token;
         String message = "Test";
-//                = messageSource.getMessage("message.regSucc", null, event.getLocale());
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom("steventouba1@gmail.com");

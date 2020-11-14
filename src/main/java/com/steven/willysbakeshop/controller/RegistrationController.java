@@ -8,7 +8,6 @@ import com.steven.willysbakeshop.util.events.OnRegistrationCompleteEvent;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,8 +43,8 @@ public class RegistrationController {
     private JwtService jwtService;
 
     @GetMapping("/registrationConfirmation")
-    public ResponseEntity<Void> confirmRegistration(WebRequest webRequest,
-                                      @RequestParam("token") String token)
+    public void confirmRegistration(WebRequest webRequest,
+                                    @RequestParam("token") String token)
     {
         Locale locale = webRequest.getLocale();
 
@@ -59,7 +58,7 @@ public class RegistrationController {
 
         user.setEnabled(true);
         registrationService.saveRegisteredUser(user);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+//        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
