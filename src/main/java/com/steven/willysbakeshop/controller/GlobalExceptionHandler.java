@@ -32,6 +32,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(TokenException.class)
+    public final ResponseEntity<ErrorDetails> handleNotFoundException(TokenException ex, WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(ConstraintViolationException.class)
     public final ResponseEntity<ValidationErrorResponse> handleValidationErrors(ConstraintViolationException exception, WebRequest request) {
         ValidationErrorResponse errorResponse = new ValidationErrorResponse();

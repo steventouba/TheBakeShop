@@ -78,7 +78,9 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDTO editProductDetails(long productId, ProductDTO productDTO) throws NotFoundException, BadCredentialsException {
+    public ProductDTO editProductDetails(long productId, ProductDTO productDTO)
+            throws NotFoundException, BadCredentialsException
+    {
         Authentication authentication = authenticationFacade.getAuthentication();
         Optional<Product> optional = productRepository.findById(productId);
         optional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));

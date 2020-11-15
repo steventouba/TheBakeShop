@@ -45,7 +45,8 @@ public class RegistrationService {
     }
 
     public User getUser(String VerificationToken) {
-        Optional<com.steven.willysbakeshop.model.VerificationToken> token = tokenRepository.findByToken(VerificationToken);
+        Optional<com.steven.willysbakeshop.model.VerificationToken> token
+                = tokenRepository.findByToken(VerificationToken);
         token.orElseThrow(() -> new NotFoundException("Could not locate token"));
 
         return token.get().getUser();

@@ -5,7 +5,6 @@ import com.steven.willysbakeshop.service.RegistrationService;
 import com.steven.willysbakeshop.util.events.OnRegistrationCompleteEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.MessageSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -18,8 +17,8 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     @Autowired
     private RegistrationService registrationService;
 
-    @Autowired
-    private MessageSource messageSource;
+//    @Autowired
+//    private MessageSource messageSource;
 
     @Autowired
     private JavaMailSender mailSender;

@@ -6,6 +6,7 @@ import com.steven.willysbakeshop.service.MyUserDetailsService;
 import com.steven.willysbakeshop.service.RegistrationService;
 import com.steven.willysbakeshop.util.events.OnRegistrationCompleteEvent;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
+import com.steven.willysbakeshop.util.exceptions.TokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.MediaType;
@@ -44,7 +45,7 @@ public class RegistrationController {
 
     @GetMapping("/registrationConfirmation")
     public void confirmRegistration(WebRequest webRequest,
-                                    @RequestParam("token") String token)
+                                    @RequestParam("token") String token) throws TokenException
     {
         Locale locale = webRequest.getLocale();
 
@@ -53,7 +54,7 @@ public class RegistrationController {
         User user = verificationToken.getUser();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExipryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            throw new NotFoundException("Token expired");
+            throw new TokenException("Token expired");
         }
 
         user.setEnabled(true);
@@ -81,7 +82,9 @@ public class RegistrationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) throws Exception {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request)
+            throws BadCredentialsException
+    {
         try {
             UsernamePasswordAuthenticationToken authToken
                     = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
@@ -89,7 +92,7 @@ public class RegistrationController {
             authenticationManager.authenticate(authToken);
 
         } catch (BadCredentialsException e) {
-            throw new Exception("Bad username or password");
+            throw new BadCredentialsException("Invalid username or password");
         }
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
