@@ -9,12 +9,12 @@ import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import com.steven.willysbakeshop.util.exceptions.TokenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -57,7 +57,6 @@ public class RegistrationController {
 
         user.setEnabled(true);
         registrationService.saveRegisteredUser(user);
-//        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -82,7 +81,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request)
+    public ResponseEntity<String> login(@RequestBody AuthenticationRequest request)
     throws BadCredentialsException {
         try {
             UsernamePasswordAuthenticationToken authToken
@@ -94,10 +93,15 @@ public class RegistrationController {
             throw new BadCredentialsException("Invalid username or password");
         }
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+        MyUserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         String token = jwtService.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthenticationResponse(token));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(userDetails.getFirstName());
     }
 
 }

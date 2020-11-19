@@ -41,6 +41,8 @@ public class MyUserDetails implements org.springframework.security.core.userdeta
         return authorities;
     }
 
+    public String getFirstName() { return firstName; }
+
     @Override
     public String getPassword() {
         return this.password;
