@@ -22,7 +22,6 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.Calendar;
-import java.util.Locale;
 
 @RestController
 @RequestMapping("/users")
@@ -45,10 +44,9 @@ public class RegistrationController {
 
     @GetMapping("/registrationConfirmation")
     public void confirmRegistration(WebRequest webRequest,
-                                    @RequestParam("token") String token) throws TokenException
-    {
-        Locale locale = webRequest.getLocale();
-
+                                    @RequestParam("token") String token
+    ) throws TokenException {
+//        Locale locale = webRequest.getLocale();
         VerificationToken verificationToken = registrationService.getVerificationToken(token);
 
         User user = verificationToken.getUser();
@@ -63,8 +61,10 @@ public class RegistrationController {
     }
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO, HttpServletRequest request) {
-        User user = registrationService.registerNewUserAccount(userDTO);
+    public ResponseEntity<Object> createUser(@RequestBody UserRequestDTO userRequestDTO,
+                                             HttpServletRequest request
+    ) {
+        User user = registrationService.registerNewUserAccount(userRequestDTO);
 
         try {
             String appUrl = request.getContextPath();
@@ -83,8 +83,7 @@ public class RegistrationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request)
-            throws BadCredentialsException
-    {
+    throws BadCredentialsException {
         try {
             UsernamePasswordAuthenticationToken authToken
                     = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());

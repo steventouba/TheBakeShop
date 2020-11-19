@@ -1,36 +1,33 @@
 package com.steven.willysbakeshop.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.steven.willysbakeshop.controller.UserController;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-@JsonDeserialize(builder = UserDTO.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDTO {
+public class UserResponseDTO {
 
     private final Long id;
     private final String firstName;
     private final String lastName;
     private final String email;
     private final String password;
-    private final Set<ProductDTO> products;
-    private final String link;
+    private final Set<ProductResponseDTO> products;
+    private final Map<String, String> resources;
 
-    private UserDTO(Builder builder) {
+    private UserResponseDTO(Builder builder) {
         this.id = builder.id;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.email = builder.email;
         this.password = builder.password;
         this.products = builder.products;
-        this.link =  builder.self;
+        this.resources =  builder.resources;
     }
 
     public Long getId() { return id; }
@@ -51,28 +48,20 @@ public class UserDTO {
         return password;
     }
 
-    public Set<ProductDTO> getProducts() { return products; }
+    public Set<ProductResponseDTO> getProducts() { return products; }
 
-    public String getSelf() { return link; }
+    public Map<String, String> getResources() { return resources; }
 
-    @JsonPOJOBuilder
+
     public static class Builder {
 
         private Long id;
-
-        @JsonAlias("first-name")
-        @JsonProperty
         private String firstName;
-
-        @JsonAlias("last-name")
-        @JsonProperty
         private String lastName;
-
         private String email;
         private String password;
-        private String matchingPassword;
-        private Set<ProductDTO> products;
-        private String self;
+        private Set<ProductResponseDTO> products;
+        private Map<String, String> resources = new HashMap<>();
 
         public Builder(String firstName, String lastName, String email) {
             this.firstName = firstName;
@@ -90,7 +79,7 @@ public class UserDTO {
             return this;
         }
 
-        public Builder withProducts(Set<ProductDTO> products) {
+        public Builder withProducts(Set<ProductResponseDTO> products) {
             this.products = products;
             return this;
         }
@@ -100,12 +89,12 @@ public class UserDTO {
                     .fromMethodName(UserController.class, "getUserById", id)
                     .buildAndExpand(id)
                     .toUri();
-            self = location.toString();
+            resources.put("self", location.toString());
             return this;
         }
 
-        public UserDTO build() {
-            return new UserDTO(this);
+        public UserResponseDTO build() {
+            return new UserResponseDTO(this);
         }
     }
 

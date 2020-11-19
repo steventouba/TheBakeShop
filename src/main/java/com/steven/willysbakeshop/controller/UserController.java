@@ -1,26 +1,22 @@
 package com.steven.willysbakeshop.controller;
 
-import com.steven.willysbakeshop.model.User;
-import com.steven.willysbakeshop.model.UserDTO;
-import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.model.UserRequestDTO;
+import com.steven.willysbakeshop.model.UserResponseDTO;
 import com.steven.willysbakeshop.service.UserService;
-import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
 @Transactional
 @CrossOrigin
 public class UserController {
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -31,32 +27,30 @@ public class UserController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity<List<UserDTO>> getUsers() {
-        List<UserDTO> users = userService.findAll();
+    public ResponseEntity<List<UserResponseDTO>> getUsers() {
+        List<UserResponseDTO> users = userService.findAll();
         return ResponseEntity.ok(users);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable long id) {
-        UserDTO user = userService.findById(id);
+    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable long id) {
+        UserResponseDTO user = userService.findById(id);
 
         return ResponseEntity.ok(user);
     }
 
     @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<UserDTO> editUser(@PathVariable long id, @RequestBody UserDTO userDTO) {
-       UserDTO alteredUser = userService.alterUserAccount(userDTO, id);
+    public ResponseEntity<UserResponseDTO> editUser(@PathVariable long id, @RequestBody UserRequestDTO userDTO) {
+        UserResponseDTO alteredUser = userService.alterUserAccount(userDTO, id);
 
         return ResponseEntity.ok(alteredUser);
     }
 
     @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<User> deleteUser(@PathVariable long id) {
-        Optional<User> user = userRepository.findById(id);
-        user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
-        userRepository.delete(user.get());
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+        userService.deleteUser(id);
 
-        return ResponseEntity.ok(user.get());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 //    @PostMapping(value = "/create", consumes= TEXT_CSV_VALUE)

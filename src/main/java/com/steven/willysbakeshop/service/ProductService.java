@@ -1,9 +1,6 @@
 package com.steven.willysbakeshop.service;
 
-import com.steven.willysbakeshop.model.Product;
-import com.steven.willysbakeshop.model.ProductDTO;
-import com.steven.willysbakeshop.model.User;
-import com.steven.willysbakeshop.model.UserDTO;
+import com.steven.willysbakeshop.model.*;
 import com.steven.willysbakeshop.repository.ProductRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
 import com.steven.willysbakeshop.security.AuthenticationFacade;
@@ -29,59 +26,58 @@ public class ProductService {
     @Autowired
     private AuthenticationFacade authenticationFacade;
 
-    public List<ProductDTO> findAll() {
+    public List<ProductResponseDTO> findAll() {
         List<Product> products = productRepository.findAll();
 
        return products
                 .stream()
-                .map(product -> {
-                    ProductDTO productDTO = new ProductDTO();
-                    productDTO.setName(product.getName());
-                    productDTO.setDescription(product.getDescription());
-                    productDTO.setSeller(mapSellerDetails(product.getSeller()));
-                    return productDTO;
-                })
-                .collect(Collectors.toList());
+                .map(product -> new ProductResponseDTO.Builder(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription())
+//                            .withSeller(mapSellerDetails(product.getSeller()))
+                        .withSelfLink(product.getId())
+                        .build()).collect(Collectors.toList());
     }
 
-    public ProductDTO getById(long id) throws NotFoundException {
+    public ProductResponseDTO getById(long id) throws NotFoundException {
         Optional<Product> productOptional = productRepository.findById(id);
         productOptional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
 
         Product product = productOptional.get();
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setName(product.getName());
-        productDTO.setDescription(product.getDescription());
-        productDTO.setSeller(mapSellerDetails(product.getSeller()));
-
-        return productDTO;
+        return new ProductResponseDTO.Builder(
+                product.getId(),
+                product.getName(),
+                product.getDescription())
+                .withSeller(mapSellerDetails(product.getSeller()))
+                .build();
     }
 
     @Transactional
-    public ProductDTO registerProduct(ProductDTO productDTO) throws NotFoundException {
+    public ProductResponseDTO registerProduct(ProductRequestDTO productRequestDTO) throws NotFoundException {
         Authentication authentication = authenticationFacade.getAuthentication();
         Optional<User> user = userRepository.findByEmail(authentication.getName());
         user.orElseThrow(() -> new NotFoundException("Could not locate listed seller"));
 
         Product product = new Product();
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
+        product.setName(productRequestDTO.getName());
+        product.setDescription(productRequestDTO.getDescription());
         user.get().setProducts(product);
         productRepository.save(product);
 
-        return new ProductDTO(
+        return new ProductResponseDTO.Builder(
                 product.getId(),
                 product.getName(),
-                product.getDescription(),
-                mapSellerDetails(product.getSeller())
-        );
+                product.getDescription())
+                .withSeller(mapSellerDetails(product.getSeller()))
+                .withSelfLink(product.getId())
+                .build();
     }
 
     @Transactional
-    public ProductDTO editProductDetails(long productId, ProductDTO productDTO)
-            throws NotFoundException, BadCredentialsException
-    {
-        Authentication authentication = authenticationFacade.getAuthentication();
+    public ProductResponseDTO editProductDetails(long productId,
+                                                ProductRequestDTO productRequestDTO
+    ) throws NotFoundException, BadCredentialsException {
         Optional<Product> optional = productRepository.findById(productId);
         optional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
 
@@ -90,17 +86,21 @@ public class ProductService {
             throw new BadCredentialsException("Unauthorized");
         }
 
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
+        product.setName(productRequestDTO.getName());
+        product.setDescription(productRequestDTO.getDescription());
         productRepository.save(product);
 
-        productDTO.setSeller(mapSellerDetails(product.getSeller()));
-
-        return productDTO;
+        return new ProductResponseDTO.Builder(
+                product.getId(),
+                product.getName(),
+                product.getDescription())
+                .withSeller(mapSellerDetails(product.getSeller()))
+                .withSelfLink(product.getId())
+                .build();
     }
 
     @Transactional
-    public boolean deleteProduct(long id) {
+    public void deleteProduct(long id) {
         Optional<Product> optional = productRepository.findById(id);
         optional.orElseThrow(() -> new NotFoundException("Could not locate requested product"));
 
@@ -109,17 +109,15 @@ public class ProductService {
             throw new BadCredentialsException("Unauthorized");
         }
         productRepository.delete(product);
-
-        return true;
     }
 
-    private UserDTO mapSellerDetails(User user) {
-        return new UserDTO.Builder(
+    private UserResponseDTO mapSellerDetails(User user) {
+        return new UserResponseDTO.Builder(
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail()
         )
+                .withSelfLink(user.getId())
                 .build();
     }
-
 }

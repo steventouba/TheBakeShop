@@ -2,7 +2,7 @@ package com.steven.willysbakeshop.service;
 
 import com.steven.willysbakeshop.model.Role;
 import com.steven.willysbakeshop.model.User;
-import com.steven.willysbakeshop.model.UserDTO;
+import com.steven.willysbakeshop.model.UserRequestDTO;
 import com.steven.willysbakeshop.model.VerificationToken;
 import com.steven.willysbakeshop.repository.TokenRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
@@ -27,16 +27,16 @@ public class RegistrationService {
     private TokenRepository tokenRepository;
 
     @Transactional
-    public User registerNewUserAccount(UserDTO userDTO) throws AlreadyExistsException {
-        if (emailExists(userDTO.getEmail())) {
+    public User registerNewUserAccount(UserRequestDTO userRequestDTO) throws AlreadyExistsException {
+        if (emailExists(userRequestDTO.getEmail())) {
             throw new AlreadyExistsException("There is an account with that email address");
         }
 
         User user = new User();
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setFirstName(userRequestDTO.getFirstName());
+        user.setLastName(userRequestDTO.getLastName());
+        user.setEmail(userRequestDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
         user.setRoles(new Role("ROLE_SELLER"));
         userRepository.save(user);
 

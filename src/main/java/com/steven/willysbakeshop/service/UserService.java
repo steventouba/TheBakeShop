@@ -1,11 +1,11 @@
 package com.steven.willysbakeshop.service;
 
 import com.steven.willysbakeshop.model.*;
-import com.steven.willysbakeshop.repository.TokenRepository;
 import com.steven.willysbakeshop.repository.UserRepository;
+import com.steven.willysbakeshop.security.AuthenticationFacade;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,20 +18,17 @@ import java.util.stream.Collectors;
 public class UserService {
 
     @Autowired
-    PasswordEncoder passwordEncoder;
+    AuthenticationFacade authenticationFacade;
 
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    private TokenRepository tokenRepository;
-
-    public List<UserDTO> findAll() {
+    public List<UserResponseDTO> findAll() {
         List<User> users = userRepository.findAll();
 
       return users
                 .stream()
-                .map(user -> new UserDTO.Builder(
+                .map(user -> new UserResponseDTO.Builder(
                         user.getFirstName(),
                         user.getLastName(),
                         user.getEmail()
@@ -42,12 +39,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public UserDTO findById(long id) throws  NotFoundException {
+    public UserResponseDTO findById(long id) throws  NotFoundException {
         Optional<User> user = userRepository.findById(id);
 
         user.orElseThrow(() -> new NotFoundException("Could not locate user"));
 
-        return new UserDTO.Builder(
+        return new UserResponseDTO.Builder(
                 user.get().getFirstName(),
                 user.get().getLastName(),
                 user.get().getEmail()
@@ -58,26 +55,47 @@ public class UserService {
 
 
     @Transactional
-    public UserDTO alterUserAccount(UserDTO userDTO, long id) throws NotFoundException {
+    public UserResponseDTO alterUserAccount(UserRequestDTO requestDTO, long id) throws NotFoundException {
         Optional<User> user = userRepository.findById(id);
         user.orElseThrow(() -> new NotFoundException(String.format("User: %d could not be located", id)));
 
         Optional<User> userStream = user.map(userToEdit -> {
-            userToEdit.setFirstName(userDTO.getFirstName());
-            userToEdit.setLastName(userDTO.getLastName());
-            userToEdit.setEmail(userDTO.getEmail());
+            userToEdit.setFirstName(requestDTO.getFirstName());
+            userToEdit.setLastName(requestDTO.getLastName());
+            userToEdit.setEmail(requestDTO.getEmail());
             return userRepository.save(userToEdit);
         });
 
-        return userDTO;
+        return new UserResponseDTO.Builder(
+                requestDTO.getFirstName(),
+                requestDTO.getLastName(),
+                requestDTO.getEmail()
+        )
+                .withId(userStream.get().getId())
+                .withSelfLink(userStream.get().getId())
+                .build();
     }
 
+    @Transactional
+    public void deleteUser(long id) {
+        Optional<User> optional = userRepository.findById(id);
+        optional.orElseThrow(() -> new NotFoundException("Could not locate requested user"));
 
-    private Set<ProductDTO> mapProductsToUser(Set<Product> products) {
+        User user = optional.get();
+        if (!authenticationFacade.isPrincipalMatch(user.getEmail())) {
+            throw new BadCredentialsException("Unauthorized");
+        }
+        userRepository.delete(user);
+    }
+
+    private Set<ProductResponseDTO> mapProductsToUser(Set<Product> products) {
        return products
                 .stream()
-                .map(product -> new ProductDTO(product.getName(), product.getDescription()))
-                .collect(Collectors.toSet());
+                .map(product -> new ProductResponseDTO
+                        .Builder(product.getId(), product.getName(), product.getDescription())
+                        .withSelfLink(product.getId())
+                        .build()
+                ).collect(Collectors.toSet());
     }
 
 }

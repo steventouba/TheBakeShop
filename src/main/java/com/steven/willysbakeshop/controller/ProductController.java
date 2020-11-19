@@ -1,6 +1,7 @@
 package com.steven.willysbakeshop.controller;
 
-import com.steven.willysbakeshop.model.ProductDTO;
+import com.steven.willysbakeshop.model.ProductRequestDTO;
+import com.steven.willysbakeshop.model.ProductResponseDTO;
 import com.steven.willysbakeshop.service.ProductService;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,24 +28,25 @@ public class ProductController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity<List<ProductDTO>> getProducts() {
-        List<ProductDTO> products = productService.findAll();
+    public ResponseEntity<List<ProductResponseDTO>> getProducts() {
+        List<ProductResponseDTO> products = productService.findAll();
 
         return ResponseEntity.ok(products);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable long id) throws NotFoundException {
-       ProductDTO productDTO = productService.getById(id);
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable long id) throws NotFoundException {
+       ProductResponseDTO product = productService.getById(id);
 
-        return ResponseEntity.ok(productDTO);
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDTO> createProducts(@RequestBody ProductDTO productDTO ) throws NotFoundException {
-        ProductDTO registeredProduct = productService.registerProduct(productDTO);
+    public ResponseEntity<ProductResponseDTO> createProducts(@RequestBody ProductRequestDTO requestDTO
+    ) throws NotFoundException {
+        ProductResponseDTO product = productService.registerProduct(requestDTO);
 
-        return ResponseEntity.ok(registeredProduct);
+        return ResponseEntity.ok(product);
     }
 
 
@@ -52,13 +54,14 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable long id) {
         productService.deleteProduct(id);
 
-        return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(value = "/{id}/edit")
-    public ResponseEntity<ProductDTO> editProduct(@PathVariable long id, @RequestBody ProductDTO toEdit)
-            throws NotFoundException, BadCredentialsException {
-        ProductDTO productDetails = productService.editProductDetails(id, toEdit);
+    public ResponseEntity<ProductResponseDTO> editProduct(@PathVariable long id,
+                                                          @RequestBody ProductRequestDTO toEdit
+    ) throws NotFoundException, BadCredentialsException {
+        ProductResponseDTO productDetails = productService.editProductDetails(id, toEdit);
 
         return ResponseEntity.ok(productDetails);
     }
