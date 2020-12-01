@@ -3,6 +3,7 @@ package com.steven.willysbakeshop.controller;
 import com.steven.willysbakeshop.model.ProductRequestDTO;
 import com.steven.willysbakeshop.model.ProductResponseDTO;
 import com.steven.willysbakeshop.service.ProductService;
+import com.steven.willysbakeshop.service.S3Service;
 import com.steven.willysbakeshop.util.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -21,9 +23,17 @@ public class ProductController {
 
     @Autowired
     ProductService productService;
+    @Autowired
+    S3Service s3Service;
 
     @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("OK");
+    }
+
+    @PostMapping(value = "/test")
+    public ResponseEntity<String> test(@RequestParam("file") MultipartFile file) {
+        s3Service.uploadFile(file);
         return ResponseEntity.ok("OK");
     }
 
