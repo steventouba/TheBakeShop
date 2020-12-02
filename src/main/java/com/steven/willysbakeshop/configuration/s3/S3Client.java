@@ -8,7 +8,6 @@ import software.amazon.awssdk.regions.Region;
 
 @Configuration
 public class S3Client {
-
     private static final Region REGION =  Region.US_WEST_1;
 
     @Bean
