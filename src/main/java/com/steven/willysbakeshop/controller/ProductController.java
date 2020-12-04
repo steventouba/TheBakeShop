@@ -32,11 +32,14 @@ public class ProductController {
     }
 
     @PostMapping(value = "/test")
-    public ResponseEntity<String> test(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> test(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description
+    ) {
         s3Service.uploadFile(file);
         return ResponseEntity.ok("OK");
     }
-
     @GetMapping(value = "/")
     public ResponseEntity<List<ProductResponseDTO>> getProducts() {
         List<ProductResponseDTO> products = productService.findAll();
