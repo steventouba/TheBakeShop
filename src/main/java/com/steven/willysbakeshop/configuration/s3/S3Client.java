@@ -8,7 +8,8 @@ import software.amazon.awssdk.regions.Region;
 
 @Configuration
 public class S3Client {
-
+    private static final String ID = "AKIA2KQ2SULAAE6I3XJ2";
+    private static final String KEY = "JWxwJGeSPI3c5CxPJr6rmS11O+2MUbfkGqKN3Sye";
     private static final Region REGION =  Region.US_WEST_1;
 
     @Bean

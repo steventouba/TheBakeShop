@@ -84,7 +84,12 @@ public class ProductResponseDTO {
             return this;
         }
 
-        public Builder withSelfLink(long id) {
+        public Builder withImageUrl(String url) {
+            resources.put("image", url);
+            return this;
+        }
+
+        public Builder withSelfUrl(long id) {
             URI location = MvcUriComponentsBuilder
                     .fromMethodName(ProductController.class, "getProductById", id)
                     .buildAndExpand(id)

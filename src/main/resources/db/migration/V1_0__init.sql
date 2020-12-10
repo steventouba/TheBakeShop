@@ -11,6 +11,7 @@ CREATE TABLE products(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(80) NOT NULL,
     description VARCHAR(80) NOT NULL,
+    image_url TEXT,
     seller_id BIGINT references users(id) ON DELETE CASCADE
 );
 

@@ -31,15 +31,16 @@ public class ProductController {
         return ResponseEntity.ok("OK");
     }
 
-    @PostMapping(value = "/test")
-    public ResponseEntity<String> test(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("name") String name,
-            @RequestParam("description") String description
-    ) {
-        s3Service.uploadFile(file);
-        return ResponseEntity.ok("OK");
-    }
+//    @PostMapping(value = "/test")
+//    public ResponseEntity<String> test(
+//            @RequestParam("file") MultipartFile file,
+//            @RequestParam("name") String name,
+//            @RequestParam("description") String description
+//    ) {
+//        URL imageUrl = s3Service.uploadFile(file);
+//        return ResponseEntity.ok(imageUrl.toString());
+//    }
+
     @GetMapping(value = "/")
     public ResponseEntity<List<ProductResponseDTO>> getProducts() {
         List<ProductResponseDTO> products = productService.findAll();
@@ -54,9 +55,14 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductResponseDTO> createProducts(@RequestBody ProductRequestDTO requestDTO
+    @PostMapping(value = "/create")
+    public ResponseEntity<ProductResponseDTO> createProducts(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description
     ) throws NotFoundException {
+        ProductRequestDTO requestDTO = new ProductRequestDTO(name, description, file);
+
         ProductResponseDTO product = productService.registerProduct(requestDTO);
 
         return ResponseEntity.ok(product);

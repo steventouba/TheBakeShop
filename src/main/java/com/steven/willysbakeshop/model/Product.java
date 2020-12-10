@@ -22,6 +22,9 @@ public class Product {
     @NotBlank(message = "Product description must not be empty")
     private String description;
 
+    @JsonProperty
+    private  String imageUrl;
+
     @JsonProperty("seller-id")
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seller_id", nullable = false)
@@ -29,9 +32,10 @@ public class Product {
 
     public Product() {}
 
-    public Product(String name, String description, User seller) {
+    public Product(String name, String description, String imageUrl, User seller) {
         this.name = name;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.seller = seller;
     }
 
@@ -47,6 +51,10 @@ public class Product {
         return description;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
     public User getSeller() { return seller; }
 
     public void setName(String name) {
@@ -55,6 +63,10 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public void setSeller(User seller) { this.seller = seller; }

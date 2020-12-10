@@ -93,7 +93,7 @@ public class UserService {
                 .stream()
                 .map(product -> new ProductResponseDTO
                         .Builder(product.getId(), product.getName(), product.getDescription())
-                        .withSelfLink(product.getId())
+                        .withSelfUrl(product.getId())
                         .build()
                 ).collect(Collectors.toSet());
     }

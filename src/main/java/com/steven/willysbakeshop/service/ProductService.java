@@ -23,6 +23,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired S3Service s3Service;
+
     @Autowired
     private AuthenticationFacade authenticationFacade;
 
@@ -36,7 +38,8 @@ public class ProductService {
                         product.getName(),
                         product.getDescription())
 //                            .withSeller(mapSellerDetails(product.getSeller()))
-                        .withSelfLink(product.getId())
+                        .withSelfUrl(product.getId())
+                        .withImageUrl(product.getImageUrl())
                         .build()).collect(Collectors.toList());
     }
 
@@ -63,6 +66,7 @@ public class ProductService {
         product.setName(productRequestDTO.getName());
         product.setDescription(productRequestDTO.getDescription());
         user.get().setProducts(product);
+        product.setImageUrl(s3Service.uploadFile(productRequestDTO.getImage()).toString());
         productRepository.save(product);
 
         return new ProductResponseDTO.Builder(
@@ -70,7 +74,8 @@ public class ProductService {
                 product.getName(),
                 product.getDescription())
                 .withSeller(mapSellerDetails(product.getSeller()))
-                .withSelfLink(product.getId())
+                .withSelfUrl(product.getId())
+                .withImageUrl(product.getImageUrl())
                 .build();
     }
 
@@ -95,7 +100,7 @@ public class ProductService {
                 product.getName(),
                 product.getDescription())
                 .withSeller(mapSellerDetails(product.getSeller()))
-                .withSelfLink(product.getId())
+                .withSelfUrl(product.getId())
                 .build();
     }
 

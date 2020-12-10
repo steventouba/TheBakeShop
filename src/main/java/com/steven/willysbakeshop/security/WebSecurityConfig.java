@@ -43,7 +43,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-//                    .antMatchers("/products/create").hasRole("SELLER")
+                    .antMatchers("/products/create").hasRole("SELLER")
                     .antMatchers("/products/{id:\\d+}/*").hasRole("SELLER")
                     .antMatchers("/users/{id:\\d+}/*").hasAnyRole("SELLER", "BUYER", "ADMIN")
                     .antMatchers("/**").permitAll()
